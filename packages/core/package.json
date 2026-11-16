@@ -42,5 +42,8 @@
     "build": "tsup",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "prepack": "npm run build && node ../../scripts/copy-license.mjs"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
   }
 }
