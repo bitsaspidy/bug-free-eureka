@@ -58,7 +58,7 @@ function roster() {
 const DONE_MS = 30 * 60 * 1000; // a finished agent shows as "done" for 30 min, then idle
 const STALE_MS = 6 * 60 * 60 * 1000; // a start with no stop for 6h is treated as abandoned
 const MAX_FEED = 200;
-const KINDS = { SubagentStart: 'start', SubagentStop: 'stop', PostToolUse: 'tool' };
+const KINDS = { SubagentStart: 'start', SubagentStop: 'stop', PostToolUse: 'tool', UserPromptSubmit: 'start', Stop: 'stop' };
 const safe = (v, max) => String(v || '').replace(/[^A-Za-z0-9_.:-]/g, '').slice(0, max);
 
 function activity(team) {

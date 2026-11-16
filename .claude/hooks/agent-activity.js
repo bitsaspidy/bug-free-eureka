@@ -5,14 +5,16 @@
  *
  * Appends one tab-separated line per event to .claude/agent-activity.log (gitignored):
  *   <ISO time> TAB <event> TAB <agent> [TAB <agent id> [TAB <tool name>]]
- * Start/stop also show a short notice in the session. PostToolUse is logged only when it fires inside a
- * subagent (agent_id present) and records the tool NAME only — never tool input, output, paths or commands,
- * so no secret can reach the log. It prints nothing, to keep the session quiet.
+ * Subagent start/stop also show a short notice in the session. Main-thread events (UserPromptSubmit, Stop,
+ * PostToolUse without agent_id) are recorded as the lead (eureka-lead) so the view shows the lead working as
+ * soon as the owner asks something; they print nothing. PostToolUse records the tool NAME only — never tool
+ * input, output, prompt text, paths or commands, so no secret can reach the log.
  * Cross-platform (pure Node, no shell). Never blocks or fails the session: every error is swallowed, exit 0.
  */
 const fs = require('node:fs');
 const path = require('node:path');
 
+const LEAD = 'eureka-lead';
 const MAX_INPUT = 1024 * 1024; // ignore absurdly large payloads
 const MAX_LOG_BYTES = 512 * 1024; // rotate the log once it grows past this
 
@@ -30,10 +32,13 @@ function finish() {
     let e = {};
     try { e = raw.length <= MAX_INPUT ? JSON.parse(raw || '{}') : {}; } catch (_) { e = {}; }
     const event = clean(e.hook_event_name || process.argv[2] || 'SubagentEvent', 40);
-    const agent = clean(e.agent_type || e.subagent_type || e.agent_name || 'agent', 60);
-    const id = e.agent_id ? clean(e.agent_id, 8) : '';
+    // Main thread (no agent_id): the owner's session acts as the lead. A prompt starts the lead's turn,
+    // Stop ends it, and its tool calls (e.g. Agent = delegating) are shown as the lead's.
+    const lead = !e.agent_id && /^(UserPromptSubmit|Stop|PostToolUse)$/.test(event);
+    const sid = clean(e.session_id, 64).replace(/[^A-Za-z0-9-]/g, '').slice(0, 7);
+    const agent = lead ? LEAD : clean(e.agent_type || e.subagent_type || e.agent_name || 'agent', 60);
+    const id = e.agent_id ? clean(e.agent_id, 8) : lead ? `L${sid || 'main'}` : '';
     const isTool = /ToolUse/.test(event);
-    if (isTool && !id) { done = true; return process.exit(0); } // main-thread tool call: not team activity
     const tool = isTool ? clean(e.tool_name, 80).replace(/[^A-Za-z0-9_.:-]/g, '') : '';
     const isStart = /Start/.test(event);
     const verb = isStart ? 'started' : /Stop/.test(event) ? 'finished' : event;
@@ -47,7 +52,7 @@ function finish() {
       fs.appendFileSync(logFile, `${new Date().toISOString()}\t${event}\t${agent}${id ? `\t${id}` : ''}${tool ? `\t${tool}` : ''}\n`);
     } catch (_) { /* logging is best effort */ }
 
-    if (!isTool) process.stdout.write(JSON.stringify({ systemMessage: `${isStart ? '▶' : '■'} ${agent} ${verb}` }));
+    if (!isTool && !lead) process.stdout.write(JSON.stringify({ systemMessage: `${isStart ? '▶' : '■'} ${agent} ${verb}` }));
   } catch (_) { /* never block the session */ }
   process.exit(0);
 }
