@@ -144,7 +144,10 @@ const server = http.createServer((req, res) => {
     if (!TRUST_HOST) {
       if (!HOSTS.has(String(req.headers.host || '').toLowerCase())) return send(403, 'text/plain', 'forbidden host');
       const site = req.headers['sec-fetch-site'];
-      if (site && site !== 'same-origin' && site !== 'none') return send(403, 'text/plain', 'cross-site request refused');
+      // Allow a top-level page load from a link (e.g. clicked in chat/GitHub): the other site cannot read
+      // the response and frame-ancestors 'none' blocks framing. Cross-site fetches (state.json) stay refused.
+      const topNav = req.headers['sec-fetch-mode'] === 'navigate' && req.headers['sec-fetch-dest'] === 'document';
+      if (site && site !== 'same-origin' && site !== 'none' && !topNav) return send(403, 'text/plain', 'cross-site request refused');
     }
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(405, 'text/plain', 'read-only');
     const url = (req.url || '/').split('?')[0];
