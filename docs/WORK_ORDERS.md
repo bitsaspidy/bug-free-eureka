@@ -6,7 +6,7 @@ Status: `todo` · `in-progress` · `review` (PR open) · `done` (merged by owner
 |---|---|---|---|---|---|
 | WO-000 | AI agent system | eureka-lead | Agents, skills, hooks, docs load in Claude Code | done | [#1](https://github.com/bitsaspidy/bug-free-eureka/pull/1) |
 | WO-001 | Repository foundation (workspaces, TS, tsup, ESLint, Prettier, Vitest, Changesets, community files) | devops-release, docs-community | Clean checkout: `npm ci && npm run build && npm run typecheck && npm test` pass | done | [PR #3](https://github.com/bitsaspidy/bug-free-eureka/pull/3) |
-| WO-002 | Security rule engine (types, registry, evidence, not_assessed, report builder) | core-engineer, qa-engineer | Deterministic; pass/fail/not_assessed tests | todo | — |
+| WO-002 | Security rule engine (types, registry, evidence, not_assessed, report builder) | core-engineer, qa-engineer | Deterministic; pass/fail/not_assessed tests | review | [PR #7](https://github.com/bitsaspidy/bug-free-eureka/pull/7) |
 | WO-003 | BFE-001 security headers | rule-analyst → core-engineer | No assumption about unknown proxy behavior | todo | — |
 | WO-004 | BFE-003 request limits + BFE-006 trusted proxy | rule-analyst → core-engineer | Valid/invalid/unknown cases tested | todo | — |
 | WO-005 | BFE-005 sensitive logging + redaction utility | core-engineer, security-reviewer | Known secrets never leak (redaction-check skill) | todo | — |
