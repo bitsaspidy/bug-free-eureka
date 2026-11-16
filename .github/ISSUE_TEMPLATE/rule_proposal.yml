@@ -1,0 +1,56 @@
+name: Rule proposal
+description: Propose a new security or configuration rule (BFE-xxx).
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Security vulnerabilities do not go here.** Report them privately: see SECURITY.md.
+        A rule reports `fail`, `pass` or `not_assessed`. Unknown facts are never a pass.
+  - type: input
+    id: concern
+    attributes:
+      label: Concern
+      description: One line. What misconfiguration does the rule detect?
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Suggested default severity
+      description: Defaults only. Not a risk judgment.
+      options:
+        - low
+        - medium
+        - high
+    validations:
+      required: true
+  - type: textarea
+    id: facts
+    attributes:
+      label: Facts the rule needs
+      description: What must the scanner observe? What if it cannot observe them (not_assessed)?
+    validations:
+      required: true
+  - type: textarea
+    id: pass-fail
+    attributes:
+      label: Pass and fail examples
+      description: Short code or config snippets. Use no real secrets.
+      render: javascript
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Public standards or documentation links (https only).
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: The rule is deterministic (no network, clock or randomness).
+          required: true
+        - label: I can supply pass, fail and not_assessed fixtures.
+          required: true

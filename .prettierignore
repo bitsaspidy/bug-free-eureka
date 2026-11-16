@@ -1,0 +1,11 @@
+dist
+coverage
+node_modules
+package-lock.json
+.claude
+docs
+LICENSE
+scripts/dev
+README.md
+CLAUDE.md
+*.md
