@@ -151,3 +151,4 @@ vite.config.ts.timestamp-*
 # Claude Code local state
 .claude/agent-activity.log*
 .claude/settings.local.json
+packages/*/LICENSE
