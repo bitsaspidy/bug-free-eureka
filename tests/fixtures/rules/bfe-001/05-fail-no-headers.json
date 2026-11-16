@@ -1,0 +1,13 @@
+{
+  "name": "fail-no-headers",
+  "description": "nothing set, x-powered-by enabled",
+  "overrides": {
+    "settings": {
+      "poweredBy": "enabled"
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

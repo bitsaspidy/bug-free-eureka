@@ -1,0 +1,24 @@
+{
+  "name": "pass-helmet-default",
+  "description": "helmet global default v8; x-powered-by disabled",
+  "overrides": {
+    "settings": {
+      "poweredBy": "disabled"
+    },
+    "helmet": {
+      "dependency": "present",
+      "version": "^8.0.0",
+      "mounts": [
+        {
+          "scope": "global",
+          "location": "src/app.ts:10",
+          "options": "default"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

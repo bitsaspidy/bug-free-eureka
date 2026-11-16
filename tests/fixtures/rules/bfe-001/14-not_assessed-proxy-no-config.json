@@ -1,0 +1,14 @@
+{
+  "name": "not_assessed-proxy-no-config",
+  "description": "proxy yes, config not supplied",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "headerConfig": "not_supplied"
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "adversarial-proxy-claims-security",
+  "description": "proxy yes, config supplied, lists nothing",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "headerConfig": "supplied"
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

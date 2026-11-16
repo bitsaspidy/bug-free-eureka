@@ -1,0 +1,15 @@
+{
+  "name": "not_assessed-parse-error",
+  "description": "coverage incomplete",
+  "overrides": {
+    "coverage": {
+      "complete": false,
+      "limitsHit": ["parse-error:src/app.ts"],
+      "unresolvedMiddleware": false
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}
