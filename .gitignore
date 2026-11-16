@@ -147,3 +147,7 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Claude Code local state
+.claude/agent-activity.log*
+.claude/settings.local.json
