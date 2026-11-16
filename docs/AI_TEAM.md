@@ -37,6 +37,19 @@ Project (`.claude/skills/`):
 | `ci-hardening` | devops-release, security | SHA pinning, least privilege, OIDC publish |
 | `release-gate` | lead | 9-point go/no-go with evidence |
 
+Stack skills (the engineering know-how; preloaded where marked ●, otherwise loaded on demand ○):
+| Skill | Covers | core | integ | qa | sec | devops | docs | rule |
+|---|---|---|---|---|---|---|---|---|
+| `node-typescript` | Node 22–26, TS strict/NodeNext, dual ESM/CJS, Zod 4, typed errors & boundaries, pollution/ReDoS, cross-platform | ● | ● | | ○ | ○ | | |
+| `express-middleware` | Express 4+5, trust proxy/req.ip, body limits, headers, CORS, cookies, rate limiting + Redis store, audit logger, Supertest | | ● | | ○ | | ○ | ● |
+| `testing-vitest` | Vitest projects/coverage thresholds, table-driven rule tests, fake time, temp dirs, CLI tests, fast-check, pytest | ● | ● | ● | | ○ | | |
+| `cli-sarif` | Commander, exit codes, JSON-only config, stdout/stderr, atomic writes, SARIF 2.1.0 mapping for GitHub | ○ | ● | | | | ○ | |
+| `static-analysis-safety` | evidence sources, AST parsing without executing, confidence table, file-walk limits, symlinks, secret masking | ● | ○ | | ● | | | ○ |
+| `npm-packaging` | workspaces, exports maps, tsup, internal deps (no `workspace:*` in npm), peers, publint/attw, Changesets, OIDC | ○ | ○ | | ○ | ● | ○ | |
+| `docs-dashboard-python` | VitePress + Pages deploy, local-first React dashboard safety, Python validators with pytest | | | | | ○ | ● | |
+
+Future role: `frontend-engineer` (React + Vite dashboard, v1.1+) is hired when that work starts. It will preload `docs-dashboard-python` and `testing-vitest`.
+
 Built-in skills to lean on: `engineering:code-review` (lead, before PR), `security-review` (security-reviewer), `engineering:testing-strategy` (qa, new modules), `engineering:architecture` (ADRs in `docs/architecture/`), `engineering:documentation` (docs-community), `engineering:deploy-checklist` (release), `simplify` (after a feature lands).
 
 ## Start block (lead prints at the start of a task)

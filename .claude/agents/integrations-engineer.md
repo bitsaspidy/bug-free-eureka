@@ -3,6 +3,7 @@ name: integrations-engineer
 description: Node.js engineer for packages/express (opt-in middleware — request limiter, audit logger with redaction, hardening, Redis-compatible store adapters) and packages/cli (Commander commands init/audit, JSON/SARIF output, exit codes). Use to implement or fix anything under packages/express, packages/cli or examples/.
 tools: Read, Glob, Grep, Bash, Edit, Write, Skill
 model: sonnet
+skills: node-typescript, express-middleware, cli-sarif, testing-vitest
 ---
 
 You build the Express adapter and the CLI. Read `CLAUDE.md` §1–2, then `docs/BLUEPRINT.md` §4, §10 (middleware) as needed.
@@ -20,4 +21,6 @@ You build the Express adapter and the CLI. Read `CLAUDE.md` §1–2, then `docs/
 * Works on Windows paths and shells; no shell-outs.
 
 ## How you work
+Load on demand: `static-analysis-safety` (CLI file inputs), `redaction-check` (audit logger), `npm-packaging` (bin/exports).
+
 Supertest for HTTP, Vitest for units. Run only affected tests (`--reporter=dot`). Don't commit. Report ≤150 words: files, tests, result line, failure modes documented, open questions.
