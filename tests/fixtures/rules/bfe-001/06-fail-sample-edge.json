@@ -1,0 +1,31 @@
+{
+  "name": "fail-sample-edge",
+  "description": "edge sample shows only x-powered-by",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "headerConfig": "not_supplied"
+    },
+    "sample": {
+      "capturedAt": "edge",
+      "scheme": "https",
+      "route": "/",
+      "isHtml": "yes"
+    },
+    "headers": [
+      {
+        "name": "x-powered-by",
+        "state": "set",
+        "value": "Express",
+        "layer": "sample",
+        "scope": "global",
+        "origin": "sample",
+        "location": "src/app.ts:12"
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

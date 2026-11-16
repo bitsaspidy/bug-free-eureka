@@ -1,0 +1,21 @@
+{
+  "name": "not_assessed-conditional-helmet",
+  "description": "helmet only in conditional mount",
+  "overrides": {
+    "helmet": {
+      "dependency": "present",
+      "version": "^8.0.0",
+      "mounts": [
+        {
+          "scope": "conditional",
+          "location": "src/app.ts:9",
+          "options": "default"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

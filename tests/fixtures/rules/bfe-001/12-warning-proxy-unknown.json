@@ -1,0 +1,14 @@
+{
+  "name": "warning-proxy-unknown",
+  "description": "proxy unknown, nothing seen",
+  "overrides": {
+    "proxy": {
+      "present": "unknown",
+      "headerConfig": "not_supplied"
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "low"
+  }
+}

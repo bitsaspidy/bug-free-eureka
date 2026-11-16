@@ -1,0 +1,28 @@
+{
+  "name": "fail-helmet-csp-disabled",
+  "description": "helmet disables CSP",
+  "overrides": {
+    "settings": {
+      "poweredBy": "disabled"
+    },
+    "helmet": {
+      "dependency": "present",
+      "version": "^8.0.0",
+      "mounts": [
+        {
+          "scope": "global",
+          "location": "src/app.ts:10",
+          "options": {
+            "content-security-policy": {
+              "state": "disabled"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

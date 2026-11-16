@@ -1,0 +1,36 @@
+{
+  "name": "pass-api-only",
+  "description": "api kind: only H1,H4,H8,H9",
+  "overrides": {
+    "app": {
+      "kind": "api"
+    },
+    "settings": {
+      "poweredBy": "disabled"
+    },
+    "headers": [
+      {
+        "name": "x-content-type-options",
+        "state": "set",
+        "value": "nosniff",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      },
+      {
+        "name": "strict-transport-security",
+        "state": "set",
+        "value": "max-age=63072000",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

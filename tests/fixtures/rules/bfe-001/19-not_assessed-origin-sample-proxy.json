@@ -1,0 +1,20 @@
+{
+  "name": "not_assessed-origin-sample-proxy",
+  "description": "origin sample without headers, proxy yes",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "headerConfig": "not_supplied"
+    },
+    "sample": {
+      "capturedAt": "origin",
+      "scheme": "https",
+      "route": "/",
+      "isHtml": "yes"
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

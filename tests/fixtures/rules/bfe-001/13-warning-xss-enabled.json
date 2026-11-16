@@ -1,0 +1,87 @@
+{
+  "name": "warning-xss-enabled",
+  "description": "x-xss-protection 1",
+  "overrides": {
+    "settings": {
+      "poweredBy": "disabled"
+    },
+    "headers": [
+      {
+        "name": "content-security-policy",
+        "state": "set",
+        "value": "default-src 'self'; script-src 'self'; frame-ancestors 'self'; object-src 'none'",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      },
+      {
+        "name": "strict-transport-security",
+        "state": "set",
+        "value": "max-age=31536000",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      },
+      {
+        "name": "x-content-type-options",
+        "state": "set",
+        "value": "nosniff",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      },
+      {
+        "name": "x-frame-options",
+        "state": "set",
+        "value": "DENY",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      },
+      {
+        "name": "referrer-policy",
+        "state": "set",
+        "value": "strict-origin-when-cross-origin",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      },
+      {
+        "name": "cross-origin-opener-policy",
+        "state": "set",
+        "value": "same-origin",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      },
+      {
+        "name": "cross-origin-resource-policy",
+        "state": "set",
+        "value": "same-site",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      },
+      {
+        "name": "x-xss-protection",
+        "state": "set",
+        "value": "1; mode=block",
+        "layer": "app",
+        "scope": "global",
+        "origin": "source",
+        "location": "src/app.ts:12"
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

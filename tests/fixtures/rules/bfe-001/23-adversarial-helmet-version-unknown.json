@@ -1,0 +1,21 @@
+{
+  "name": "adversarial-helmet-version-unknown",
+  "description": "helmet version latest: D3 gives a low-confidence warning, never pass",
+  "overrides": {
+    "helmet": {
+      "dependency": "present",
+      "version": "latest",
+      "mounts": [
+        {
+          "scope": "global",
+          "location": "src/app.ts:10",
+          "options": "default"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "low"
+  }
+}
