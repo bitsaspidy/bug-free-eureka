@@ -62,6 +62,8 @@ npm run build
 npm test
 ```
 
+TypeScript is pinned to `~6.0.0` because typescript-eslint 8.72.2 supports only `typescript <6.1`; Dependabot ignores newer TypeScript until that changes.
+
 Other scripts: `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run test:coverage`.
 
 ## Roadmap
