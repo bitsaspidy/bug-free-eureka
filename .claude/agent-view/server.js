@@ -4,7 +4,9 @@
  * Bug-Free Eureka agent view — a tiny, read-only, project-scoped dashboard on http://localhost:4778.
  *
  * Shows ONLY this repository's team: roster from .claude/agents/*.md, live/recent activity from
- * .claude/agent-activity.log (written by the SubagentStart/Stop hook), and work-order status from
+ * .claude/agent-activity.log (written by the SubagentStart/Stop hook) merged with live sessions read from
+ * Claude Code transcripts (./sessions.js — covers sessions started in the parent folder or a worktree, where
+ * the repo hooks never load, and generic agent types such as general-purpose), and work-order status from
  * docs/WORK_ORDERS.md. It never reads another project's files, so it cannot show Jyotish Stack
  * (which keeps its own view on :4777).
  *
@@ -15,6 +17,7 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+const { sessions: liveSessions } = require('./sessions');
 
 const PROJECT = 'bug-free-eureka';
 const TITLE = 'Bug-Free Eureka';
@@ -61,7 +64,7 @@ const MAX_FEED = 200;
 const KINDS = { SubagentStart: 'start', SubagentStop: 'stop', PostToolUse: 'tool', UserPromptSubmit: 'start', Stop: 'stop' };
 const safe = (v, max) => String(v || '').replace(/[^A-Za-z0-9_.:-]/g, '').slice(0, max);
 
-function activity(team) {
+function activity(team, live) {
   const lines = readSafe(LOG, MAX_LOG_TAIL).split(/\r?\n/).filter(Boolean);
   const events = [];
   const names = new Map(); // agent id → agent type (stop/tool events may only carry the id)
@@ -90,18 +93,50 @@ function activity(team) {
     }
   }
   const now = Date.now();
-  const active = [...runs.values()].filter((r) => now - Date.parse(r.at) < STALE_MS);
+  // Where each run belongs: "WO-006 · bfe-wo006" (or the session title), keyed by hook id.
+  const label = (s) => [s.wo, s.worktree].filter(Boolean).join(' · ') || s.title || `session ${s.sid}`;
+  const where = new Map();
+  for (const s of live) {
+    where.set(`L${s.sid}`, label(s));
+    for (const a of s.agents) where.set(a.id.slice(0, 8), label(s));
+  }
+  for (const e of events) e.where = where.get(e.id) || '';
+  // Transcript runs: subagents of every session, plus each session's own turn as the lead.
+  const tRuns = [];
+  for (const s of live) {
+    if (s.turn === 'working') tRuns.push({ agent: LEAD, id: `L${s.sid}`, at: s.lastAt, status: 'working', tools: s.tools, lastTool: s.lastTool, where: label(s) });
+    for (const a of s.agents) tRuns.push({ agent: a.agent, via: a.via, id: a.id.slice(0, 8), at: a.status === 'working' ? a.startedAt : a.lastAt, status: a.status, tools: a.tools, lastTool: a.lastTool, where: label(s), desc: a.desc });
+  }
+  // Feed: transcript starts/finishes for runs the hooks never saw (same 8-char id = same run).
+  const seen = new Set(events.map((e) => e.id).filter(Boolean));
+  const extra = [];
+  for (const s of live) {
+    for (const a of s.agents) {
+      const id = a.id.slice(0, 8);
+      if (seen.has(id)) continue;
+      if (a.startedAt) extra.push({ at: a.startedAt, kind: 'start', agent: a.agent, id, tool: '', where: label(s) });
+      if (a.status === 'done' && a.lastAt) extra.push({ at: a.lastAt, kind: 'stop', agent: a.agent, id, tool: '', where: label(s) });
+    }
+  }
+  const feed = [...events, ...extra].sort((x, y) => Date.parse(x.at) - Date.parse(y.at));
+  const hookActive = [...runs.values()].filter((r) => now - Date.parse(r.at) < STALE_MS).map((r) => ({ ...r, where: where.get(r.id) || '' }));
+  const tIds = new Set(tRuns.map((r) => r.id));
+  const active = [...hookActive.filter((r) => !tIds.has(r.id)), ...tRuns.filter((r) => r.status === 'working')];
   const known = new Set(team.map((a) => a.name));
-  const guests = [...new Set(active.map((r) => r.agent))].filter((n) => !known.has(n))
-    .map((name) => ({ name, model: 'session', lead: false, role: 'Built-in or ad-hoc agent', guest: true }));
+  const recentT = tRuns.filter((r) => r.status === 'working' || now - Date.parse(r.at) < DONE_MS);
+  const guests = [...new Set([...active, ...recentT].map((r) => r.agent))].filter((n) => !known.has(n))
+    .map((name) => ({ name, model: 'session', lead: false, role: 'Built-in or ad-hoc agent type', guest: true }));
   const agents = [...team, ...guests].map((a) => {
     const mine = active.filter((r) => r.agent === a.name).sort((x, y) => Date.parse(y.at) - Date.parse(x.at));
-    const fin = finished.get(a.name);
-    if (mine.length) return { ...a, status: 'working', since: mine[0].at, runs: mine.length, tools: mine[0].tools, lastTool: mine[0].lastTool };
-    if (fin && now - Date.parse(fin.at) < DONE_MS) return { ...a, status: 'done', since: fin.at, tools: fin.tools };
+    const doneT = tRuns.filter((r) => r.agent === a.name && r.status !== 'working').sort((x, y) => Date.parse(y.at) - Date.parse(x.at))[0];
+    let fin = finished.get(a.name);
+    if (doneT && (!fin || Date.parse(doneT.at) > Date.parse(fin.at))) fin = { at: doneT.at, tools: doneT.tools, where: doneT.where };
+    const wh = (r) => [...new Set(r.map((x) => x.where).filter(Boolean))].join(', ');
+    if (mine.length) return { ...a, status: 'working', since: mine[0].at, runs: mine.length, tools: mine[0].tools, lastTool: mine[0].lastTool, where: wh(mine), via: mine[0].via || '', desc: mine[0].desc || '' };
+    if (fin && now - Date.parse(fin.at) < DONE_MS) return { ...a, status: 'done', since: fin.at, tools: fin.tools, where: fin.where || '' };
     return { ...a, status: 'idle', since: fin ? fin.at : null };
   });
-  return { agents, active, recent: events.filter((e) => e.kind !== 'tool').slice(-40).reverse(), log: events.slice(-MAX_FEED) };
+  return { agents, active, recent: feed.filter((e) => e.kind !== 'tool').slice(-40).reverse(), log: feed.slice(-MAX_FEED) };
 }
 
 function workOrders() {
@@ -115,7 +150,9 @@ function workOrders() {
 
 function state() {
   const team = roster();
-  return { project: PROJECT, title: TITLE, root: path.basename(ROOT), at: new Date().toISOString(), roster: team, ...activity(team), workOrders: workOrders() };
+  let live = [];
+  try { live = liveSessions(ROOT, team.map((a) => a.name)); } catch (_) { live = []; }
+  return { project: PROJECT, title: TITLE, root: path.basename(ROOT), at: new Date().toISOString(), roster: team, ...activity(team, live), sessions: live, workOrders: workOrders() };
 }
 
 // Client page. Written without backticks, "${" or backslashes so it can live inside this template literal.
@@ -166,14 +203,24 @@ h2{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute
 .empty{color:var(--mute);padding:10px;font-family:system-ui,sans-serif}
 #follow{display:none}#follow.show{display:inline-block;color:var(--eye);border-color:var(--eye)}
 ul{list-style:none;margin:0;padding:0}li{padding:6px 0;border-bottom:1px solid var(--line)}li:last-child{border:0}
+.bot .w{font-size:11px;color:var(--ink);margin-top:3px;min-height:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bot.idle .w{visibility:hidden}
+.ses{display:grid;gap:8px}.s{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--card2)}
+.s.working{border-color:var(--eye)}.s .h{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.s .tt{font-weight:650;overflow-wrap:anywhere}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--eyeoff);flex:none}.s.working .dot{background:var(--eye);animation:pulse 1.4s infinite}
+.s.waiting .dot{background:var(--acc)}.s.stalled .dot{background:var(--warn)}
+.chip{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:0 8px;color:var(--mute)}.chip.wo{color:var(--ink);font-weight:700}
+.chip.now{color:var(--eye);border-color:var(--eye);font-weight:800;letter-spacing:.04em}
+.s ul{margin:6px 0 0 18px}.s li{padding:2px 0;border:0;font-size:12px}.s li.working{font-weight:650}.s li .k2{display:inline-block;width:14px;color:var(--mute)}.s li.working .k2{color:var(--eye)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--eye) 70%,transparent)}100%{box-shadow:0 0 0 8px transparent}}
 .st{font-size:12px;padding:1px 8px;border-radius:6px;border:1px solid var(--line)}.st.review{color:var(--warn)}.st.done{color:var(--acc)}.st.in-progress{color:var(--acc);font-weight:700}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 <header><h1>${TITLE}</h1><span class="tag">project: ${PROJECT}</span>
-<span class="counts"><span class="cnt w"><b id="cw">0</b> working</span><span class="cnt d"><b id="cd">0</b> done</span><span class="cnt"><b id="ci">0</b> idle</span></span>
+<span class="counts"><span class="cnt w"><b id="cw">0</b> working</span><span class="cnt d"><b id="cd">0</b> done</span><span class="cnt"><b id="ci">0</b> idle</span><span class="cnt w"><b id="cs">0</b> sessions working</span></span>
 <span class="m" id="u">connecting…</span></header>
 <main>
 <section class="full"><h2>Working now</h2><div class="floor" id="floor"></div></section>
+<section class="full"><h2>Sessions (last 6h, incl. parent folder &amp; worktrees)</h2><div class="ses" id="ses"></div></section>
 <section><h2>Logs</h2>
 <div class="bar" id="filters"><button data-f="all" aria-pressed="true">All</button><button data-f="start" aria-pressed="false">Starts</button><button data-f="tool" aria-pressed="false">Tool use</button><button data-f="stop" aria-pressed="false">Finishes</button><span class="sp"></span><button id="follow" aria-pressed="false">↓ Jump to latest</button></div>
 <div class="log" id="log" role="log" aria-live="polite" aria-label="Agent activity log"></div></section>
@@ -233,14 +280,16 @@ var cards={};
 function floor(agents){var f=document.getElementById('floor'),seen={},n={working:0,done:0,idle:0};
  agents.forEach(function(a){var c=cards[a.name];seen[a.name]=1;n[a.status]=(n[a.status]||0)+1;var r=role(a.name);
   if(!c){c=el('div','bot');c.style.setProperty('--role',r.c);c.innerHTML=robot(r);
-   c.append(el('div','n',a.name),el('div','r',r.l||a.role||''),el('div',''),el('div','x'));c.children[3].append(el('span','pill'));
+   c.append(el('div','n',a.name),el('div','r',r.l||a.role||''),el('div',''),el('div','x'),el('div','w'));c.children[3].append(el('span','pill'));
    cards[a.name]=c;f.append(c)}
   c.className='bot '+a.status+(a.lead?' lead':'');c.title=a.role||'';
-  c.querySelector('.pill').textContent=a.status;
+  c.querySelector('.pill').textContent=a.status==='working'?'working now':a.status;
+  c.querySelector('.w').textContent=(a.where?'▸ '+a.where:'')+(a.via?' · via '+a.via:'');
+  if(a.desc)c.title=a.desc;
   var x=a.status==='working'?((a.lastTool?a.lastTool+' · ':'')+(a.tools||0)+' tools · '+ago(a.since)+(a.runs>1?' · ×'+a.runs:''))
    :a.status==='done'?('finished '+ago(a.since)+' ago'+(a.tools?' · '+a.tools+' tools':''))
    :(a.since?'last run '+ago(a.since)+' ago':'not run yet');
-  c.querySelector('.x').textContent=x;c.setAttribute('aria-label',a.name+': '+a.status+', '+x)});
+  c.querySelector('.x').textContent=x;c.setAttribute('aria-label',a.name+': '+a.status+', '+x+(a.where?', '+a.where:''))});
  Object.keys(cards).forEach(function(k){if(!seen[k]){cards[k].remove();delete cards[k]}});
  document.getElementById('cw').textContent=n.working;document.getElementById('cd').textContent=n.done;document.getElementById('ci').textContent=n.idle}
 var filter='all',lastKey='',logData=[],follow=true;
@@ -252,7 +301,7 @@ function renderLog(){var atEnd=follow,prev=lastKey,mark=!!prev,rows=logData.filt
   var row=el('div','row '+e.kind);row.append(el('span','t',hms(e.at)),el('span','k',e.kind==='start'?'▶':e.kind==='stop'?'■':'·'));
   var m=el('span','msg'),a=el('span','a',e.agent);a.style.color=role(e.agent).c;m.append(a);
   if(e.kind==='tool'){m.append(document.createTextNode(' used '),el('span','tl',e.tool||'a tool'))}else m.append(document.createTextNode(e.kind==='start'?' started':' finished'));
-  if(e.id)m.append(el('span','m','  #'+e.id));row.append(m);if(newer)row.classList.add('new');if(mark&&keyOf(e)===prev)newer=true;logEl.append(row)});
+  if(e.where)m.append(el('span','m','  '+e.where));if(e.id)m.append(el('span','m','  #'+e.id));row.append(m);if(newer)row.classList.add('new');if(mark&&keyOf(e)===prev)newer=true;logEl.append(row)});
  if(atEnd)logEl.scrollTop=logEl.scrollHeight}
 logEl.addEventListener('scroll',function(){follow=logEl.scrollHeight-logEl.scrollTop-logEl.clientHeight<24;followBtn.classList.toggle('show',!follow)});
 followBtn.addEventListener('click',function(){follow=true;logEl.scrollTop=logEl.scrollHeight;followBtn.classList.remove('show')});
@@ -260,10 +309,23 @@ document.getElementById('filters').addEventListener('click',function(ev){var b=e
  document.querySelectorAll('#filters button[data-f]').forEach(function(x){x.setAttribute('aria-pressed',String(x===b))});follow=true;lastKey='';renderLog();if(logData.length)lastKey=keyOf(logData[logData.length-1])});
 function wo(items){var u=document.getElementById('wo');u.replaceChildren();if(!items.length){u.append(el('li','m','No work orders'));return}
  items.forEach(function(w){var l=el('li');l.append(el('span','st '+w.status,w.status),el('span',null,'  '+w.id+' — '+w.title));u.append(l)})}
+function ses(list){var box=document.getElementById('ses'),n=0;box.replaceChildren();
+ if(!list.length){box.append(el('div','empty','No Claude Code session for this project in the last 6 hours.'))}
+ list.forEach(function(s){if(s.status==='working')n++;var d=el('div','s '+s.status),h=el('div','h');
+  h.append(el('span','dot'),el('span','tt',s.title||('session '+s.id)));
+  if(s.status==='working')h.append(el('span','chip now','WORKING NOW'));
+  if(s.wo)h.append(el('span','chip wo',s.wo));if(s.worktree)h.append(el('span','chip',s.worktree));if(s.branch)h.append(el('span','chip',s.branch));
+  var st=s.turn==='working'?'lead busy'+(s.lastTool?' · '+s.lastTool:''):s.turn==='waiting'?'waiting for you':'quiet';
+  h.append(el('span','m',st+' · '+ago(s.lastAt)+' ago · #'+s.id));d.append(h);
+  if(s.agents&&s.agents.length){var u=el('ul');s.agents.forEach(function(a){var li=el('li',a.status);
+   li.append(el('span','k2',a.status==='working'?'▶':a.status==='done'?'✓':'…'),el('b',null,a.agent),document.createTextNode((a.via?' (via '+a.via+')':'')+(a.desc?' — '+a.desc:'')+' · '+(a.status==='working'?'working now':a.status)+' · '+(a.tools||0)+' tools'+(a.lastTool&&a.status==='working'?' · '+a.lastTool:'')+' · '+ago(a.lastAt||a.startedAt)+' ago'));u.append(li)});d.append(u)}
+  box.append(d)});
+ document.getElementById('cs').textContent=n;return n}
 var timer=null;
 async function tick(){try{var r=await fetch('/state.json',{cache:'no-store'});var s=await r.json();
  if(s.project!=='${PROJECT}')throw new Error('wrong project');
- floor(s.agents||[]);wo(s.workOrders||[]);
+ floor(s.agents||[]);wo(s.workOrders||[]);var nw=ses(s.sessions||[]);
+ document.title=(nw?'('+nw+' working) ':'')+'${TITLE} · Agent View';
  var log=s.log||[],k=log.length?keyOf(log[log.length-1]):'';if(k!==lastKey||!logEl.childElementCount){logData=log;renderLog();lastKey=k}
  document.getElementById('u').textContent='live · updated '+new Date().toLocaleTimeString();
 }catch(e){document.getElementById('u').textContent='disconnected — is the server running?'}}
