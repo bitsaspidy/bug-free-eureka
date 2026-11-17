@@ -23,7 +23,7 @@ Bug-Free Eureka is an open-source API security toolkit for Node.js and Express. 
 
 | Package | What it does | Status |
 |---|---|---|
-| [`@bug-free-eureka/core`](packages/core) | Rule engine, rules, finding model and report builder. Framework-free. | In progress |
+| [`@bug-free-eureka/core`](packages/core) | Rule engine, rules, finding model, report builder and a deep redaction utility (`redact`). Framework-free. | In progress |
 | [`@bug-free-eureka/cli`](packages/cli) | `init` and `audit` commands, JSON and SARIF output, `--fail-on` for CI. | Planned |
 | [`@bug-free-eureka/express`](packages/express) | Opt-in middleware: rate limiter (in-memory or Redis-compatible), redacting audit logger, hardening. | Planned |
 
