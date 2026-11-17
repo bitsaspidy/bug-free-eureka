@@ -85,6 +85,28 @@ Planning dates; security beats schedule.
 - **v0.4:** more rules and a public beta (January 2027)
 - **v1.0:** stable release after review (February 2027)
 
+## Work-order status
+
+Updated with every work order. Full details are on the [work-order board](docs/WORK_ORDERS.md).
+
+| WO | Work | Status |
+|---|---|---|
+| WO-000 | AI development team (agents, skills, dashboard) | ✅ Done ([#1](https://github.com/bitsaspidy/bug-free-eureka/pull/1)) |
+| WO-001 | Repository foundation (workspaces, TypeScript, tooling, community files) | ✅ Done ([#3](https://github.com/bitsaspidy/bug-free-eureka/pull/3)) |
+| WO-002 | Security rule engine and report builder | ✅ Done ([#7](https://github.com/bitsaspidy/bug-free-eureka/pull/7)) |
+| WO-003 | BFE-001 security headers | ✅ Done ([#9](https://github.com/bitsaspidy/bug-free-eureka/pull/9)) |
+| WO-004 | BFE-003 request limits, BFE-006 trusted proxy | ✅ Done ([#10](https://github.com/bitsaspidy/bug-free-eureka/pull/10)) |
+| WO-005 | BFE-005 sensitive logging and redaction | ✅ Done ([#18](https://github.com/bitsaspidy/bug-free-eureka/pull/18), [#20](https://github.com/bitsaspidy/bug-free-eureka/pull/20)) |
+| WO-006 | CLI: `init`, `audit`, JSON and SARIF output, exit codes | ✅ Done ([#22](https://github.com/bitsaspidy/bug-free-eureka/pull/22)) |
+| WO-007 | Express adapter: rate limiter, redacting audit logger, Redis option | 🔄 In progress |
+| WO-008 | Cross-platform CI, CodeQL, dependency review, Dependabot | ✅ Done ([#13](https://github.com/bitsaspidy/bug-free-eureka/pull/13)) |
+| WO-009 | Documentation site (quickstart, config reference, deployment) | ⏳ To do |
+| WO-010 | npm publishing (Changesets, provenance) | ⏳ To do |
+| WO-011 | Sponsors and governance | ⏳ To do |
+| WO-012 | External beta | ⏳ To do |
+| WO-013 | Stable v1.0.0 | ⏳ To do |
+| WO-014 | Post-launch improvement | ⏳ To do |
+
 ## What it is not
 
 Bug-Free Eureka finds common, well-defined misconfigurations. It is not a penetration test, it can't prove that vulnerabilities are absent, and it doesn't make an app "secure" or "OWASP compliant" on its own.
