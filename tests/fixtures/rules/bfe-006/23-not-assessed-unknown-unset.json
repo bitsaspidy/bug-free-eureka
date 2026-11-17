@@ -1,0 +1,13 @@
+{
+  "name": "not-assessed-unknown-unset",
+  "description": "T14",
+  "overrides": {
+    "deployment": {
+      "topology": "unknown"
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "warning-custom-reader",
+  "description": "custom reader no byte counter",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "custom-reader",
+        "source": "express",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "byteCounted": false
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "low"
+  }
+}

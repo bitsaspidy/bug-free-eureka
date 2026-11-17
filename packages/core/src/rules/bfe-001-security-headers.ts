@@ -1,5 +1,6 @@
 import { issuePaths } from "../engine/schemas.js";
 import { compare } from "../engine/sort.js";
+import { safeLocation } from "./shared/safe-location.js";
 import type { Confidence, Evidence, Rule, RuleResult } from "../types/index.js";
 import { securityHeadersInputSchema, type SecurityHeadersInput } from "./bfe-001-input.js";
 
@@ -114,13 +115,7 @@ function minString(list: readonly (string | undefined)[]): string | undefined {
   return out;
 }
 
-const LOCATION_PATTERN = /^[\w./-]{1,200}:\d{1,9}$/;
 const UNKNOWN_LOCATION = "unknown-location";
-
-/** Only a plain "file:line" location is echoed; anything else is dropped. */
-function safeLocation(location: string | undefined): string | undefined {
-  return location !== undefined && LOCATION_PATTERN.test(location) ? location : undefined;
-}
 
 function uniqSorted(list: readonly string[]): string[] {
   return [...new Set(list)].sort(compare);

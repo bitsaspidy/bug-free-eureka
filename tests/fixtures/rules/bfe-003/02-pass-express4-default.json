@@ -1,0 +1,33 @@
+{
+  "name": "pass-express4-default",
+  "description": "same with express 4",
+  "overrides": {
+    "app": {
+      "expressMajor": 4
+    },
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        }
+      },
+      {
+        "kind": "urlencoded",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

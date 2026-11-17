@@ -1,0 +1,22 @@
+{
+  "name": "fail-json-huge",
+  "description": "urlencoded 1 GiB",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "urlencoded",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 1073741824
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

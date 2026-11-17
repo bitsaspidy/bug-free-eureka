@@ -1,0 +1,31 @@
+{
+  "name": "adversarial-order-masking",
+  "description": "small global, unbounded route",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 1024
+        }
+      },
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "unbounded"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

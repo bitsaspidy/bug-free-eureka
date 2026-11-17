@@ -1,0 +1,41 @@
+{
+  "name": "pass-multer-bounded",
+  "description": "bounded multer memory",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "multer",
+        "source": "multer",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 2097152
+        },
+        "multer": {
+          "storage": "memory",
+          "limitsObject": "literal",
+          "files": {
+            "state": "literal",
+            "bytes": 3
+          },
+          "fields": {
+            "state": "literal",
+            "bytes": 10
+          },
+          "fieldSize": {
+            "state": "default"
+          },
+          "parts": {
+            "state": "literal",
+            "bytes": 20
+          }
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

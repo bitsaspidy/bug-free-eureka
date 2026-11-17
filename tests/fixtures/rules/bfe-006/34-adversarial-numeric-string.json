@@ -1,0 +1,14 @@
+{
+  "name": "adversarial-numeric-string",
+  "description": "collector emits unresolved for the string 1",
+  "overrides": {
+    "trustProxy": {
+      "state": "unresolved",
+      "location": "src/app.ts:3"
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

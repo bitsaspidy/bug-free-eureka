@@ -1,0 +1,22 @@
+{
+  "name": "warning-true-overwrite",
+  "description": "T4",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "directExposure": "no",
+      "forwardedHeaderHandling": "overwrite"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "boolean",
+        "value": true
+      }
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "not-assessed-conditional",
+  "description": "G2",
+  "overrides": {
+    "deployment": {
+      "topology": "none"
+    },
+    "trustProxy": {
+      "state": "conditional"
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

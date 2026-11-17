@@ -1,0 +1,21 @@
+{
+  "name": "pass-single-hop",
+  "description": "T7",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "directExposure": "no"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 1
+      }
+    }
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

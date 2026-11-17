@@ -1,0 +1,13 @@
+{
+  "name": "not_assessed-legacy",
+  "description": "legacy bodyParser",
+  "overrides": {
+    "app": {
+      "legacyBodyParser": true
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "warning-nginx-default-1m",
+  "description": "nginx supplied, no directive",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "bodyLimitConfig": "supplied",
+      "appReachableDirectly": "no",
+      "nginx": {
+        "clientMaxBodySize": [],
+        "configComplete": true
+      }
+    },
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "unbounded"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

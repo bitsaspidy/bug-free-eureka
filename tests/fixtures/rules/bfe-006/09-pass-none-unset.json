@@ -1,0 +1,13 @@
+{
+  "name": "pass-none-unset",
+  "description": "T1",
+  "overrides": {
+    "deployment": {
+      "topology": "none"
+    }
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "high"
+  }
+}

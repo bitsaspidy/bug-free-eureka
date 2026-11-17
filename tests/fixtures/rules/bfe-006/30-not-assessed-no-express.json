@@ -1,0 +1,13 @@
+{
+  "name": "not-assessed-no-express",
+  "description": "G1",
+  "overrides": {
+    "app": {
+      "expressAppFound": false
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

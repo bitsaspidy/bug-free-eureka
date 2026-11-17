@@ -1,0 +1,20 @@
+{
+  "name": "not-assessed-function",
+  "description": "G5",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "function",
+        "alwaysTrue": false
+      }
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

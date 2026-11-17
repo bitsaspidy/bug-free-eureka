@@ -1,0 +1,21 @@
+{
+  "name": "pass-loopback-declared",
+  "description": "T10",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "proxyAddresses": ["127.0.0.1"]
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "list",
+        "entries": ["loopback"]
+      }
+    }
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "warning-true-unknown-proxy-config",
+  "description": "T5",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "boolean",
+        "value": true
+      }
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "low"
+  }
+}

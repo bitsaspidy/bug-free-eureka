@@ -1,0 +1,20 @@
+{
+  "name": "not-assessed-specific-list-no-addresses",
+  "description": "T11",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "list",
+        "entries": ["10.0.1.5"]
+      }
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

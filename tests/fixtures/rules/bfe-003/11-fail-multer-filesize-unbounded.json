@@ -1,0 +1,38 @@
+{
+  "name": "fail-multer-filesize-unbounded",
+  "description": "multer fileSize default",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "multer",
+        "source": "multer",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        },
+        "multer": {
+          "storage": "memory",
+          "limitsObject": "literal",
+          "files": {
+            "state": "literal",
+            "bytes": 2
+          },
+          "fields": {
+            "state": "default"
+          },
+          "fieldSize": {
+            "state": "default"
+          },
+          "parts": {
+            "state": "default"
+          }
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

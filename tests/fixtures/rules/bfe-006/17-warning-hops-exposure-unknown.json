@@ -1,0 +1,20 @@
+{
+  "name": "warning-hops-exposure-unknown",
+  "description": "T8",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 1
+      }
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "low"
+  }
+}

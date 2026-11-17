@@ -1,0 +1,41 @@
+{
+  "name": "warning-multer-memory-large",
+  "description": "multer memory 50 MiB",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "multer",
+        "source": "multer",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 52428800
+        },
+        "multer": {
+          "storage": "memory",
+          "limitsObject": "literal",
+          "files": {
+            "state": "literal",
+            "bytes": 3
+          },
+          "fields": {
+            "state": "literal",
+            "bytes": 10
+          },
+          "fieldSize": {
+            "state": "default"
+          },
+          "parts": {
+            "state": "literal",
+            "bytes": 20
+          }
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

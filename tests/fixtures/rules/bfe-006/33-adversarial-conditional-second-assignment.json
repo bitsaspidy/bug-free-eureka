@@ -1,0 +1,19 @@
+{
+  "name": "adversarial-conditional-second-assignment",
+  "description": "G2 wins over declared match",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "directExposure": "no",
+      "declaredHops": 1
+    },
+    "trustProxy": {
+      "state": "conditional",
+      "location": "src/app.ts:12"
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

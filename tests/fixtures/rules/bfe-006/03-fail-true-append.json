@@ -1,0 +1,22 @@
+{
+  "name": "fail-true-append",
+  "description": "E3",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "directExposure": "no",
+      "forwardedHeaderHandling": "append"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "boolean",
+        "value": true
+      }
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

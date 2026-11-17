@@ -1,0 +1,20 @@
+{
+  "name": "not-assessed-invalid-entry",
+  "description": "G5",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "list",
+        "entries": ["Loopback"]
+      }
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

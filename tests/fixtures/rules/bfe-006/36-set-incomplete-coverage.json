@@ -1,0 +1,25 @@
+{
+  "name": "set-incomplete-coverage",
+  "description": "G4",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "directExposure": "no"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 1
+      }
+    },
+    "coverage": {
+      "complete": false,
+      "limitsHit": ["max-files"]
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

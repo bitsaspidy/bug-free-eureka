@@ -1,0 +1,20 @@
+{
+  "name": "fail-hops-with-cdn-lb-overcount",
+  "description": "T6 default N=2",
+  "overrides": {
+    "deployment": {
+      "topology": "cdn-plus-lb"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 3
+      }
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "fail-true-direct-exposure",
+  "description": "E1",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "directExposure": "yes"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "boolean",
+        "value": true
+      }
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

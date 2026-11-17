@@ -114,14 +114,14 @@ describe("BFE-001 spec fixtures", () => {
 
 describe("BFE-001 rule metadata and engine integration", () => {
   it("produces exactly one aggregated finding via the engine", () => {
-    const findings = runRules(createRegistry(builtinRules), build({}), { now: NOW });
+    const findings = runRules(createRegistry([bfe001]), build({}), { now: NOW });
     expect(findings).toHaveLength(1);
     expect(findings[0]).toMatchObject({ ruleId: "BFE-001", severity: "medium", status: "fail" });
     expect(findings[0]?.references).toHaveLength(8);
   });
 
   it("registry is sorted by id and the description makes no security guarantee", () => {
-    expect(builtinRules.map((r) => r.id)).toEqual(["BFE-001"]);
+    expect(builtinRules.map((r) => r.id)).toContain("BFE-001");
     expect(bfe001.description).not.toMatch(/compliant|bug-free/i);
   });
 

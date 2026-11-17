@@ -1,0 +1,20 @@
+{
+  "name": "fail-true-no-proxy",
+  "description": "E2",
+  "overrides": {
+    "deployment": {
+      "topology": "none"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "boolean",
+        "value": true
+      }
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

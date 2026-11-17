@@ -1,0 +1,21 @@
+{
+  "name": "pass-list-covers-proxy",
+  "description": "T10",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "proxyAddresses": ["10.0.1.5"]
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "list",
+        "entries": ["10.0.1.0/28"]
+      }
+    }
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

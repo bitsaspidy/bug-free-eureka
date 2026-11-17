@@ -1,0 +1,21 @@
+{
+  "name": "fail-json-infinity",
+  "description": "json unbounded",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "unbounded"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

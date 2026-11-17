@@ -1,0 +1,31 @@
+{
+  "name": "warning-proxy-cap-declared",
+  "description": "declared proxy cap, 50 MiB json",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "bodyLimitConfig": "not_supplied",
+      "appReachableDirectly": "no",
+      "declaredLimit": {
+        "state": "literal",
+        "bytes": 1048576
+      }
+    },
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 52428800
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "not-assessed-env-value",
+  "description": "G2",
+  "overrides": {
+    "trustProxy": {
+      "state": "unresolved"
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}
