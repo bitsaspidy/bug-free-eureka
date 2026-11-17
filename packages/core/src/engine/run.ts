@@ -1,6 +1,6 @@
 import type { Evidence, Rule, RuleResult, SecurityFinding } from "../types/index.js";
 import { InputInvalidError } from "./errors.js";
-import { maskSecrets } from "./mask.js";
+import { maskLocation, maskSecrets } from "./mask.js";
 import { createRegistry, RuleRegistry } from "./registry.js";
 import { issuePaths, ruleResultSchema, runOptionsSchema } from "./schemas.js";
 import { compare } from "./sort.js";
@@ -22,7 +22,7 @@ function sanitizeEvidence(list: readonly Evidence[]): Evidence[] {
   return list
     .map((e): Evidence => {
       const out: Evidence = { source: maskSecrets(e.source), detail: maskSecrets(e.detail) };
-      if (e.location !== undefined) out.location = maskSecrets(e.location);
+      if (e.location !== undefined) out.location = maskLocation(e.location);
       return out;
     })
     .sort(compareEvidence);

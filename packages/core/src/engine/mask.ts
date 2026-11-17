@@ -1,3 +1,5 @@
+import { safeLocation } from "../rules/shared/safe-location.js";
+
 export const MASK = "****";
 
 /** Masking helper: never reveals any part (or the length) of the value. */
@@ -7,8 +9,11 @@ export function mask(value?: unknown): string {
 }
 
 const MAX_SCAN_LENGTH = 10_000;
+// Long, unambiguous key names match anywhere (DB_PASSWORD, xAuthToken).
+// Short ones only match as a whole word (auth_token, x-otp, sig=), so `design`, `signal`,
+// `encoded` or `author` in ordinary text are not masked.
 const KEY =
-  "(?:pass(?:word|wd|phrase)?|pwd|secret|token|api[_-]?key|authorization|auth|session(?:id)?|otp|credential|private[_-]?key|code|sig(?:nature)?)";
+  "(?:pass(?:word|wd|phrase)?|secret|token|api[_-]?key|authorization|credential|private[_-]?key|(?<![a-z0-9])(?:pwd|auth|session(?:id)?|otp(?:code)?|codes?|sig(?:nature)?)(?![a-z0-9]))";
 
 // Every pattern is linear-time: bounded quantifiers, no nested/overlapping repeats,
 // and input is capped to MAX_SCAN_LENGTH before matching. No unbounded leading
@@ -41,6 +46,14 @@ const PATTERNS: readonly (readonly [RegExp, string])[] = [
   [/\b(?:sk|pk|rk|ghp|gho|ghs|xox[a-z])[-_][A-Za-z0-9_-]{16,200}/g, MASK],
   [/\bAKIA[0-9A-Z]{16}\b/g, MASK],
 ];
+
+/**
+ * Masks an evidence location. A plain relative `file.ext:line` (the shared
+ * allowlist) is kept as is, so line numbers survive; anything else is masked.
+ */
+export function maskLocation(location: string): string {
+  return safeLocation(location) ?? maskSecrets(location);
+}
 
 /**
  * Defense in depth: masks secret-looking substrings in free text. Rules must
