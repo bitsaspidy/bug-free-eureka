@@ -84,7 +84,7 @@ export async function loadConfig(root: string, flag: string | undefined): Promis
   const abs = await resolveInside(root, flag ?? CONFIG_FILE, label);
   if (flag === undefined && !(await exists(abs)))
     return { config: configSchema.parse({ version: 1 }) };
-  const raw = parseJson(await readSmallFile(abs, label), label);
+  const raw = parseJson(await readSmallFile(root, abs, label), label);
   const parsed = configSchema.safeParse(raw);
   if (!parsed.success) throw new UsageError(formatIssues("config", parsed.error));
   return { config: parsed.data, path: abs };

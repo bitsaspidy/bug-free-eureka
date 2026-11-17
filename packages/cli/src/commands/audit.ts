@@ -64,7 +64,7 @@ export async function audit(root: string, opts: AuditOptions, io: CliIo): Promis
     if (ruleCfg?.evidence !== undefined) {
       const label = `config.rules.${rule.id}.evidence`;
       const abs = await resolveInside(root, ruleCfg.evidence, label);
-      input = parseJson(await readSmallFile(abs, label), label);
+      input = parseJson(await readSmallFile(root, abs, label), label);
       const rel = describePath(root, abs);
       scope.add(rel);
       evidenceUri.set(rule.id, rel);

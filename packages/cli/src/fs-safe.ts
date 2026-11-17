@@ -71,11 +71,17 @@ export async function exists(abs: string): Promise<boolean> {
 }
 
 /** Reads a regular file of at most MAX_INPUT_BYTES as UTF-8. Never follows into FIFOs or devices. */
-export async function readSmallFile(abs: string, label: string): Promise<string> {
+export async function readSmallFile(root: string, path: string, label: string): Promise<string> {
   let info;
+  let abs: string;
   try {
+    // Open the real path, re-checked just before use, to narrow the window for a symlink swap.
+    abs = await realpath(path);
+    if (!isInside(root, abs))
+      throw new UsageError(`${label}: path is outside the project directory`);
     info = await stat(abs);
   } catch (err) {
+    if (err instanceof UsageError) throw err;
     if (code(err) === "ENOENT") throw new UsageError(`${label}: file not found`);
     throw new UsageError(`${label}: file cannot be read`);
   }
@@ -116,18 +122,27 @@ export function parseJson(text: string, label: string): unknown {
  * directories are created, the data goes to a temp file in the same directory, then it
  * is renamed over the target. Readers never see a half-written file.
  */
+// Windows device names: writing to them misbehaves or leaves undeletable files. Refused everywhere.
+const RESERVED = /^(?:con|prn|aux|nul|com[0-9¹²³]|lpt[0-9¹²³]|conin$|conout$)(?:..*)?$/i;
+
 export async function writeAtomic(
   root: string,
   abs: string,
   content: string,
   label: string,
 ): Promise<void> {
+  if (RESERVED.test(basename(abs).replace(/[. ]+$/, ""))) {
+    throw new UsageError(`${label}: reserved device name`);
+  }
   const dir = dirname(abs);
   await mkdir(dir, { recursive: true }).catch(() => {
     throw new UsageError(`${label}: cannot create the parent directory`);
   });
   // Re-check after mkdir: a directory on the way may be a symlink created meanwhile.
-  if (!isInside(root, await realpath(dir))) {
+  const realDir = await realpath(dir).catch(() => {
+    throw new UsageError(`${label}: cannot be written`);
+  });
+  if (!isInside(root, realDir)) {
     throw new UsageError(`${label}: path is outside the project directory`);
   }
   try {

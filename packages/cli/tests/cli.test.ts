@@ -275,6 +275,31 @@ describe("audit output", () => {
   });
 });
 
+describe("review hardening", () => {
+  it("refuses Windows device names for --output on every platform", async () => {
+    const dir = await tempDir();
+    for (const name of ["NUL", "con.txt", "reports/LPT1", "aux.sarif."]) {
+      const r = await cli(["audit", "--output", name], dir);
+      expect(r.code).toBe(2);
+      expect(r.stderr).toContain("--output: reserved device name");
+    }
+  });
+
+  it("percent-encodes fallback SARIF URIs", async () => {
+    const dir = await exampleCopy();
+    await mkdir(join(dir, "sp ace"));
+    await writeFile(join(dir, "sp ace", "a#%.json"), "{}");
+    await writeFile(
+      join(dir, "bug-free-eureka.config.json"),
+      JSON.stringify({ version: 1, rules: { "BFE-003": { evidence: "sp ace/a#%.json" } } }),
+    );
+    const r = await cli(["audit", "--format", "sarif"], dir);
+    const sarif = JSON.parse(r.stdout) as Sarif;
+    const res = sarif.runs[0]!.results.find((x) => x.ruleId === "BFE-003")!;
+    expect(res.locations[0]!.physicalLocation.artifactLocation.uri).toBe("sp%20ace/a%23%25.json");
+  });
+});
+
 describe("contracts", () => {
   it("knows exactly core's built-in rules", () => {
     expect(builtinRules.map((r) => r.id)).toEqual([...RULE_IDS]);

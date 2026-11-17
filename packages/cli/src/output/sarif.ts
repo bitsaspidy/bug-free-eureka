@@ -1,5 +1,10 @@
 import { createHash } from "node:crypto";
-import type { SecurityFinding, SecurityReport, Severity } from "@bug-free-eureka/core";
+import {
+  maskSecrets,
+  type SecurityFinding,
+  type SecurityReport,
+  type Severity,
+} from "@bug-free-eureka/core";
 
 const INFO_URI = "https://github.com/bitsaspidy/bug-free-eureka";
 const MAX_MESSAGE = 1000;
@@ -58,7 +63,14 @@ function evidenceLocation(f: SecurityFinding): { uri: string; line: number } | u
   return undefined;
 }
 
-function truncate(text: string): string {
+/** Percent-encodes each segment of a relative POSIX path so it is a valid URI reference. */
+function encodeUri(path: string): string {
+  return path.split("/").map(encodeURIComponent).join("/");
+}
+
+function truncate(input: string): string {
+  // Defence in depth: core already masks findings.
+  const text = maskSecrets(input);
   return text.length > MAX_MESSAGE ? `${text.slice(0, MAX_MESSAGE - 3)}...` : text;
 }
 
@@ -84,8 +96,8 @@ export function renderSarif(report: SecurityReport, opts: SarifOptions): string 
   const rules = [...seen.values()].map((f) => ({
     id: f.ruleId,
     name: ruleName(f.title),
-    shortDescription: { text: f.title },
-    fullDescription: { text: f.description },
+    shortDescription: { text: maskSecrets(f.title) },
+    fullDescription: { text: maskSecrets(f.description) },
     helpUri: `${INFO_URI}/blob/main/docs/rules/${f.ruleId}.md`,
     defaultConfiguration: { level: failLevel(f.severity) },
     properties: {
@@ -97,7 +109,7 @@ export function renderSarif(report: SecurityReport, opts: SarifOptions): string 
     .filter((f) => f.status !== "pass")
     .map((f) => {
       const { kind, level } = classify(f);
-      const loc = evidenceLocation(f) ?? { uri: opts.fallbackUri(f.ruleId), line: 1 };
+      const loc = evidenceLocation(f) ?? { uri: encodeUri(opts.fallbackUri(f.ruleId)), line: 1 };
       const fingerprint = createHash("sha256")
         .update(`${f.ruleId}\0${loc.uri}\0${f.status}`)
         .digest("hex");
