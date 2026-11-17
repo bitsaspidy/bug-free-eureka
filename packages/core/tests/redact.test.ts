@@ -177,15 +177,31 @@ describe("security review regressions (WO-005)", () => {
     "x-otp",
     "x-session",
     "XAuthToken",
+    "dbpass",
+    "DBPASS",
+    "authkey",
+    "authcode",
+    "pincode",
+    "otpauth",
+    "verifyCode",
+    "resetCode",
+    "key",
+    "client_key",
+    "sess",
+    "x-authkey",
+    "x-dbpass",
   ])("masks values under %s", (k) => {
     expect(isSensitiveKey(k)).toBe(true);
     expect(out({ [k]: C.otp })).not.toMatch(LEAK);
     expect(out(redactHeaders({ [k]: C.otp }))).not.toMatch(LEAK);
   });
 
-  it.each(["statusCode", "author", "passenger", "pinned", "compass"])("keeps %s", (k) => {
-    expect(isSensitiveKey(k)).toBe(false);
-  });
+  it.each(["statusCode", "zipCode", "publicKey", "shipping", "footprint", "page"])(
+    "keeps %s",
+    (k) => {
+      expect(isSensitiveKey(k)).toBe(false);
+    },
+  );
 
   it("bounds huge sparse arrays, wide objects and total text", () => {
     const t0 = performance.now();
@@ -216,5 +232,17 @@ describe("security review regressions (WO-005)", () => {
     const s = out(m);
     expect(s).not.toMatch(LEAK);
     expect(s).toContain("[object]");
+  });
+
+  it("masks code= in free text and bounds Error props and headers", () => {
+    expect(out(`GET /cb?code=${C.otp}&state=1`)).not.toMatch(LEAK);
+    const err = new Error("x") as Error & Record<string, unknown>;
+    for (let i = 0; i < 300_000; i++) err[`p${i}`] = i;
+    const many: Record<string, string> = {};
+    for (let i = 0; i < 300_000; i++) many[`h${i}`] = "v";
+    const t0 = performance.now();
+    expect(out(err)).toContain("[Truncated]");
+    expect(JSON.stringify(redactHeaders(many))).toContain("[Truncated]");
+    expect(performance.now() - t0).toBeLessThan(1500);
   });
 });

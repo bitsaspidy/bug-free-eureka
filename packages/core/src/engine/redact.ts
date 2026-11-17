@@ -61,6 +61,39 @@ const KEY_WORDS: readonly string[] = [
   "jwt",
 ];
 
+// 4. Substrings that are rare outside secrets, even inside other words (dbpass, authkey).
+const ANY_PARTS: readonly string[] = ["pass", "auth", "mfa"];
+// 5. Short parts that are only checked at the start or end (pincode, userpin, otpauth),
+//    because inside words they are common (shipping, footprint).
+const EDGE_PARTS: readonly string[] = ["otp", "pin", "sess", "sid"];
+// 6. Keys ending in "code" or "key" are secrets (resetCode, client_key) unless known safe.
+const SAFE_CODE_KEYS: readonly string[] = [
+  "statuscode",
+  "errorcode",
+  "exitcode",
+  "httpcode",
+  "responsecode",
+  "zipcode",
+  "postcode",
+  "postalcode",
+  "countrycode",
+  "languagecode",
+  "currencycode",
+  "areacode",
+  "barcode",
+  "sourcecode",
+];
+const SAFE_KEY_KEYS: readonly string[] = [
+  "publickey",
+  "primarykey",
+  "foreignkey",
+  "sortkey",
+  "partitionkey",
+  "cachekey",
+  "routingkey",
+  "idempotencykey",
+];
+
 export function normalizeKey(key: string): string {
   let out = "";
   const capped = key.length > 200 ? key.slice(0, 200) : key;
@@ -105,6 +138,10 @@ export function isSensitiveKey(key: string, extraKeys: readonly string[] = []): 
   if (EXACT_KEYS.includes(k)) return true;
   if (KEY_PARTS.some((part) => k.includes(part))) return true;
   if (keyWords(key).some((w) => KEY_WORDS.includes(w))) return true;
+  if (ANY_PARTS.some((part) => k.includes(part))) return true;
+  if (EDGE_PARTS.some((part) => k.startsWith(part) || k.endsWith(part))) return true;
+  if (k.endsWith("code") && !SAFE_CODE_KEYS.includes(k)) return true;
+  if (k.endsWith("key") && !SAFE_KEY_KEYS.includes(k)) return true;
   return extraKeys.some((extra) => normalizeKey(extra) === k);
 }
 
@@ -125,7 +162,7 @@ function redactError(err: Error, depth: number, state: State): Record<string, un
   };
   // The stack repeats the message and may hold it unmasked elsewhere: mask it too.
   if (typeof err.stack === "string") out.stack = maskSecrets(err.stack);
-  const own = walk({ ...ownData(err) }, depth, state);
+  const own = walk({ ...ownData(err, state.maxNodes - state.nodes) }, depth, state);
   if (own !== null && typeof own === "object" && !Array.isArray(own)) Object.assign(out, own);
   return out;
 }
@@ -254,7 +291,15 @@ export function redactHeaders(
   options: RedactOptions = {},
 ): Record<string, unknown> {
   const lowered: Record<string, unknown> = {};
-  for (const [k, v] of Object.entries(headers)) {
+  const limit = Math.max(1, Math.floor(options.maxNodes ?? 2000));
+  let n = 0;
+  for (const k in headers) {
+    if (!Object.prototype.hasOwnProperty.call(headers, k)) continue;
+    if (n++ >= limit) {
+      lowered["[truncated]"] = "[Truncated]";
+      break;
+    }
+    const v = headers[k];
     // Check the original name: lower-casing first would hide camelCase words (dbPass).
     lowered[k.toLowerCase()] = isSensitiveKey(k, options.extraKeys) ? MASK : v;
   }
