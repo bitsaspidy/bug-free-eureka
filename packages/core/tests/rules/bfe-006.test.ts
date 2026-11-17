@@ -56,7 +56,9 @@ const fixtures: Fixture[] = readdirSync(FIXTURE_DIR)
   .sort()
   .map((f) => JSON.parse(readFileSync(new URL(f, FIXTURE_DIR), "utf8")) as Fixture);
 
-const CANARIES = /CANARY\d|10\.99\.88\.77|<script>|etc\/passwd/;
+// Leak check, not an HTML filter: no canary value may appear in rule output, in any letter case
+// (`<SCRIPT>`, `<script src=…>`). Case-insensitive so a case-changed echo still fails the test.
+const CANARIES = /CANARY\d|10\.99\.88\.77|<script\b|etc\/passwd/i;
 
 describe("BFE-006 spec fixtures", () => {
   it("loads every fixture (spec fixtures 33 and 34 are schema tests below)", () => {
