@@ -25,6 +25,8 @@ Spec: `docs/BLUEPRINT.md` (read only the section you need). Progress: `docs/WORK
 ## 3. Workflow
 * One work order (WO) or rule per branch, from `main`. Branch names: `feat/BFE-001-…`, `fix/…`, `test/…`, `docs/…`, `ci/…`. (Cloud sessions may be required to use an assigned `claude/…` branch — that wins.)
 * Draft PR against `main`, filled from `.github/PULL_REQUEST_TEMPLATE.md` once it exists. Stage files by name, never `git add -A`.
+* **Every work order updates `README.md` in the same PR** (owner rule): rule/package status tables, badges, compatibility and status notes, whatever that WO changed. Edit only the lines your WO affects, and keep claims honest (§1.7).
+* Parallel sessions sharing one checkout: each works in its own `git worktree` (e.g. `git worktree add -b <branch> ../bfe-<wo> origin/main`); never switch branches in a shared checkout.
 * **No agent merges, publishes, changes repository settings, or edits `LICENSE`.** Security-sensitive changes need the owner's review.
 * Undisclosed vulnerabilities are never discussed in public issues.
 

@@ -17,5 +17,5 @@ description: Run one Bug-Free Eureka work order (WO-xxx) or rule (BFE-xxx) end t
 6. **Changeset** — for any change to a publishable package: `npx changeset` (patch/minor per SemVer; pre-1.0 breaking = minor).
 7. **Commit** — stage by name; message `<type>(<scope>): <summary> [WO-xxx]`.
 8. **PR** — push, open a **draft** PR against `main` using the PR template; body: what, why, verification (paste the QA template), not verified, owner decisions.
-9. **Board** — set the WO row to `review` with the PR link in the same PR.
+9. **Board + README** — in the same PR, set the WO row to `review` with the PR link, and update `README.md` to reflect the WO (rule/package status, badges, compatibility, status note). Edit only the lines this WO affects; no claims beyond what is merged and proven.
 10. **Report** — owner report format from `eureka-lead`.
