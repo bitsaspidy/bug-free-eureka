@@ -4,6 +4,15 @@ import { lstat, mkdir, open, realpath, rename, rm, stat } from "node:fs/promises
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { UsageError } from "./errors.js";
 
+// Windows device names (optionally followed by a space, dot or extension): writing to
+// them misbehaves or leaves undeletable files. Refused on every platform for portability.
+const RESERVED = /^(?:con|prn|aux|nul|com[0-9¹²³]|lpt[0-9¹²³]|conin\$|conout\$)(?:[ .].*)?$/i;
+
+/** Whether one path segment is a Windows device name (e.g. `NUL`, `con.txt`, `nul .json`). */
+export function isReservedName(segment: string): boolean {
+  return RESERVED.test(segment);
+}
+
 /** Largest config or evidence file the CLI reads. */
 export const MAX_INPUT_BYTES = 8 * 1024 * 1024;
 
@@ -122,16 +131,13 @@ export function parseJson(text: string, label: string): unknown {
  * directories are created, the data goes to a temp file in the same directory, then it
  * is renamed over the target. Readers never see a half-written file.
  */
-// Windows device names: writing to them misbehaves or leaves undeletable files. Refused everywhere.
-const RESERVED = /^(?:con|prn|aux|nul|com[0-9¹²³]|lpt[0-9¹²³]|conin$|conout$)(?:..*)?$/i;
-
 export async function writeAtomic(
   root: string,
   abs: string,
   content: string,
   label: string,
 ): Promise<void> {
-  if (RESERVED.test(basename(abs).replace(/[. ]+$/, ""))) {
+  if (relative(root, abs).split(sep).some(isReservedName)) {
     throw new UsageError(`${label}: reserved device name`);
   }
   const dir = dirname(abs);

@@ -1,6 +1,8 @@
 import { mkdir, readdir, readFile, symlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { builtinRules } from "@bug-free-eureka/core";
+import { builtinRules, type SecurityReport } from "@bug-free-eureka/core";
+import { isReservedName } from "../src/fs-safe.js";
+import { renderSarif } from "../src/output/sarif.js";
 import { afterEach, describe, expect, it } from "vitest";
 import { z } from "zod";
 import { configSchema, RULE_IDS } from "../src/config.js";
@@ -283,6 +285,44 @@ describe("review hardening", () => {
       expect(r.code).toBe(2);
       expect(r.stderr).toContain("--output: reserved device name");
     }
+  });
+
+  it("device-name check has no false positives and covers directories", async () => {
+    for (const ok of [
+      "console.json",
+      "conf.json",
+      "nullable.sarif",
+      "auxiliary.json",
+      "com.json",
+    ]) {
+      expect(isReservedName(ok)).toBe(false);
+    }
+    for (const bad of [
+      "NUL",
+      "nul .json",
+      "Con.txt",
+      "COM1",
+      "lpt9.sarif",
+      "CONIN$",
+      "conout$.x",
+    ]) {
+      expect(isReservedName(bad)).toBe(true);
+    }
+    const dir = await tempDir();
+    expect((await cli(["audit", "--output", "console.json"], dir)).code).toBe(0);
+    const nested = await cli(["audit", "--output", "nul/x.json"], dir);
+    expect(nested.stderr).toContain("--output: reserved device name");
+  });
+
+  it("SARIF survives a lone surrogate in a fallback URI", async () => {
+    const dir = await tempDir();
+    const r = await cli(["audit", "--format", "json"], dir);
+    const report = JSON.parse(r.stdout) as SecurityReport;
+    const out = renderSarif(report, { toolVersion: "0.0.0", fallbackUri: () => "e/\ud800.json" });
+    const sarif = JSON.parse(out) as Sarif;
+    expect(sarif.runs[0]!.results[0]!.locations[0]!.physicalLocation.artifactLocation.uri).toBe(
+      "e/%EF%BF%BD.json",
+    );
   });
 
   it("percent-encodes fallback SARIF URIs", async () => {

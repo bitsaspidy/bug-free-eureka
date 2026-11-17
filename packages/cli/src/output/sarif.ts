@@ -65,7 +65,9 @@ function evidenceLocation(f: SecurityFinding): { uri: string; line: number } | u
 
 /** Percent-encodes each segment of a relative POSIX path so it is a valid URI reference. */
 function encodeUri(path: string): string {
-  return path.split("/").map(encodeURIComponent).join("/");
+  // Lone surrogates make encodeURIComponent throw; replace them with U+FFFD first.
+  const wellFormed = path.replace(/[\ud800-\udfff]/gu, "�");
+  return wellFormed.split("/").map(encodeURIComponent).join("/");
 }
 
 function truncate(input: string): string {
