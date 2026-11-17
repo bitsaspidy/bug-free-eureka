@@ -94,40 +94,42 @@ export function parseRedactPath(path: string): string[] | undefined {
 
 type Side = "request" | "response";
 
-/** A path that names the other side (`res...` for a request part) never covers it. */
-function onSide(segments: readonly string[], side: Side): boolean {
-  const other = side === "request" ? ["res", "response"] : ["req", "request"];
-  return !segments.some((s) => other.includes(s));
-}
+const ANCHORS: Readonly<Record<Side, readonly string[]>> = {
+  request: ["req", "request", "*"],
+  response: ["res", "response", "*"],
+};
 
 /**
- * Path ends in `<container>.<key>`. Key match is exact (Pino is case-sensitive).
- * A `*` in the container position only counts below the root (`req.*.cookie`),
- * because Pino wildcards match exactly one level: `*.cookie` never reaches
- * `req.headers.cookie`.
+ * A path counts only when it is anchored where pino-http puts the data:
+ * `<anchor>.<container>` (whole container), `<anchor>.<container>.*`, or
+ * `<anchor>.<container>.<key>`, where the anchor is `req`/`request` (or
+ * `res`/`response`) or one `*`, and the container may be one `*`.
+ * Matching is exact and case-sensitive, like Pino. Anything else
+ * (`headers.authorization`, `err.headers`, `Res.headers`, `body.*.x`)
+ * covers nothing, so a misplaced path can never produce a pass.
  */
-function endsWith(segments: readonly string[], container: string, key: string): boolean {
-  const n = segments.length;
-  if (n < 2 || segments[n - 1] !== key) return false;
-  const prev = segments[n - 2];
-  return prev === container || (prev === "*" && n >= 3);
-}
-
 class Coverage {
   private readonly parsed: readonly (readonly string[])[];
   constructor(paths: readonly string[]) {
     this.parsed = paths.map(parseRedactPath).filter((p): p is string[] => p !== undefined);
   }
-  /** Whole container removed, e.g. `req.headers` or `req.body`. */
+  /** Whole container removed, e.g. `req.headers`, `req.headers.*` or `req.body`. */
   whole(container: string, side: Side): boolean {
-    return this.parsed.some((p) => {
-      const n = p.length;
-      const last = p[n - 1];
-      return onSide(p, side) && (last === container || (last === "*" && p[n - 2] === container));
-    });
+    return this.parsed.some(
+      (p) =>
+        ANCHORS[side].includes(p[0] as string) &&
+        p[1] === container &&
+        (p.length === 2 || (p.length === 3 && p[2] === "*")),
+    );
   }
   key(container: string, key: string, side: Side): boolean {
-    return this.parsed.some((p) => onSide(p, side) && endsWith(p, container, key));
+    return this.parsed.some(
+      (p) =>
+        p.length === 3 &&
+        ANCHORS[side].includes(p[0] as string) &&
+        (p[1] === container || p[1] === "*") &&
+        p[2] === key,
+    );
   }
   category(container: string, cat: Category, side: Side): boolean {
     if (this.whole(container, side)) return true;

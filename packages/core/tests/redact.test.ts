@@ -159,3 +159,62 @@ describe("isSensitiveKey and redactHeaders", () => {
     expect(h).toEqual({ cookie: MASK, accept: "json" });
   });
 });
+
+describe("security review regressions (WO-005)", () => {
+  it.each([
+    "auth",
+    "x-auth",
+    "bearer",
+    "otpCode",
+    "otp_code",
+    "mfa",
+    "code",
+    "passcode",
+    "dbPass",
+    "creds",
+    "accessKey",
+    "privKey",
+    "x-otp",
+    "x-session",
+    "XAuthToken",
+  ])("masks values under %s", (k) => {
+    expect(isSensitiveKey(k)).toBe(true);
+    expect(out({ [k]: C.otp })).not.toMatch(LEAK);
+    expect(out(redactHeaders({ [k]: C.otp }))).not.toMatch(LEAK);
+  });
+
+  it.each(["statusCode", "author", "passenger", "pinned", "compass"])("keeps %s", (k) => {
+    expect(isSensitiveKey(k)).toBe(false);
+  });
+
+  it("bounds huge sparse arrays, wide objects and total text", () => {
+    const t0 = performance.now();
+    expect(out(new Array(50_000_000))).toContain("[Truncated]");
+    const wide: Record<string, number> = {};
+    for (let i = 0; i < 300_000; i++) wide[`k${i}`] = i;
+    expect(out(wide)).toContain("[Truncated]");
+    expect(out(Array.from({ length: 2000 }, () => "a".repeat(10_000)))).toContain("[Truncated]");
+    expect(out(new Map(Array.from({ length: 5000 }, (_, i) => [i, i])))).toContain("[Truncated]");
+    expect(out(new Set(Array.from({ length: 5000 }, (_, i) => i)))).toContain("[Truncated]");
+    expect(performance.now() - t0).toBeLessThan(5000);
+  });
+
+  it("never invokes array index getters and masks symbol and object Map keys", () => {
+    const arr: unknown[] = [1];
+    Object.defineProperty(arr, 1, {
+      enumerable: true,
+      get() {
+        throw new Error(C.token);
+      },
+    });
+    expect(out(arr)).toBe('[1,"[Getter]"]');
+    const m = new Map<unknown, unknown>([
+      [Symbol("password"), C.pass],
+      [Symbol(), "x"],
+      [{ toString: () => C.token }, "y"],
+    ]);
+    const s = out(m);
+    expect(s).not.toMatch(LEAK);
+    expect(s).toContain("[object]");
+  });
+});

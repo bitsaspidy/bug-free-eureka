@@ -226,3 +226,55 @@ describe("BFE-005 registry and engine", () => {
     expect(JSON.stringify(report)).not.toMatch(CANARY);
   });
 });
+
+describe("BFE-005 path anchoring (security review)", () => {
+  const headersYes = {
+    requestHeaders: "yes",
+    responseHeaders: "no",
+    requestBody: "no",
+    query: "no",
+  } as const;
+  const bodyYes = {
+    requestHeaders: "no",
+    responseHeaders: "no",
+    requestBody: "yes",
+    query: "no",
+  } as const;
+  const queryYes = {
+    requestHeaders: "no",
+    responseHeaders: "no",
+    requestBody: "no",
+    query: "yes",
+  } as const;
+  it.each([
+    [["headers"], headersYes],
+    [
+      [
+        "headers.authorization",
+        "headers.cookie",
+        "headers.proxy-authorization",
+        "headers.x-api-key",
+      ],
+      headersYes,
+    ],
+    [["err.headers"], headersYes],
+    [["Res.headers", "Req.headers"], headersYes],
+    [["req.headers.x.authorization"], headersYes],
+    [["body"], bodyYes],
+    [["body.*.authorization", "query.body"], bodyYes],
+    [["url", "res.query"], queryYes],
+  ] as const)("%j does not cover the request", (paths, emits) => {
+    const o = decideLogger(logger({ emits, redaction: { state: "paths", paths: [...paths] } }));
+    expect(o.status).not.toBe("pass");
+  });
+
+  it.each([
+    [["req.headers"], headersYes],
+    [["*.headers.*"], headersYes],
+    [["request.body"], bodyYes],
+    [["req.query"], queryYes],
+  ] as const)("%j covers the request", (paths, emits) => {
+    const o = decideLogger(logger({ emits, redaction: { state: "paths", paths: [...paths] } }));
+    expect(o.status).toBe("pass");
+  });
+});
