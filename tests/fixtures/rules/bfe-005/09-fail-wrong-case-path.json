@@ -1,0 +1,28 @@
+{
+  "name": "fail-wrong-case-path",
+  "description": "Authorization in wrong case never matches",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "paths",
+          "paths": ["req.headers.Authorization", "req.headers.Cookie", "*.cookie"]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

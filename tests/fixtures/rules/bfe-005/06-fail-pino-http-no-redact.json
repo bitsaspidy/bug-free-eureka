@@ -1,0 +1,27 @@
+{
+  "name": "fail-pino-http-no-redact",
+  "description": "pino-http default serializers, no redact",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "none"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

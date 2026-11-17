@@ -33,8 +33,8 @@ Bug-Free Eureka is an open-source API security toolkit for Node.js and Express. 
 |---|---|---|---|
 | [BFE-001](docs/rules/BFE-001.md) | Missing recommended security headers | medium | Implemented |
 | [BFE-003](docs/rules/BFE-003.md) | Missing request-size limit | medium | Implemented |
+| [BFE-005](docs/rules/BFE-005.md) | Sensitive data in configured logging | high | Implemented |
 | [BFE-006](docs/rules/BFE-006.md) | Unsafe trusted-proxy configuration | high | Implemented |
-| BFE-005 | Sensitive data in configured logging | high | Planned (v0.1) |
 | BFE-002 | Unsafe CORS on sensitive endpoints | high | Planned (v0.3) |
 | BFE-004 | Missing declared login rate-limit policy | high | Planned (v0.3) |
 | BFE-007 | Stack traces in production error handling | medium | Planned (v0.3) |

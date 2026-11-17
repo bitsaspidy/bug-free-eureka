@@ -1,0 +1,33 @@
+{
+  "name": "pass-headers-redacted",
+  "description": "pino-http with every sensitive request header redacted",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "paths",
+          "paths": [
+            "req.headers.authorization",
+            "req.headers[\"proxy-authorization\"]",
+            "req.headers.cookie",
+            "req.headers[\"x-api-key\"]"
+          ]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "high"
+  }
+}

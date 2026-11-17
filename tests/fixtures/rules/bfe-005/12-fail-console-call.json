@@ -1,0 +1,27 @@
+{
+  "name": "fail-console-call",
+  "description": "console.log(req.headers) at unknown location",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "console",
+        "kind": "call",
+        "scope": "global",
+        "location": "../etc/passwd",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "none"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

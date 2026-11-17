@@ -1,0 +1,27 @@
+{
+  "name": "not_assessed-invalid-input",
+  "description": "unknown library value",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "log4js",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "none"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "warning-morgan-query",
+  "description": "morgan combined writes URLs with query strings",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "morgan",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "no",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "yes"
+        },
+        "redaction": {
+          "state": "none"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

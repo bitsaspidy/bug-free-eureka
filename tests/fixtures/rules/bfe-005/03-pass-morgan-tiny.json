@@ -1,0 +1,27 @@
+{
+  "name": "pass-morgan-tiny",
+  "description": "morgan writing no sensitive part",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "morgan",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "no",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "none"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "high"
+  }
+}

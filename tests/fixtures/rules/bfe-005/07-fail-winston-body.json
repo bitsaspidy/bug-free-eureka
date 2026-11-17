@@ -1,0 +1,27 @@
+{
+  "name": "fail-winston-body",
+  "description": "express-winston logging the body",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "express-winston",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "no",
+          "responseHeaders": "no",
+          "requestBody": "yes",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "none"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "adversarial-canary-paths",
+  "description": "canaries in redact paths and locations never echoed",
+  "overrides": {
+    "coverage": {
+      "complete": false,
+      "limitsHit": ["BFE_CANARY_TOKEN_7f3a91"]
+    },
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "Bearer BFE_CANARY_TOKEN_7f3a91",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "paths",
+          "paths": [
+            "req.body.BFE_CANARY_PASS_c02e44",
+            "req.headers[\"BFE_CANARY_COOKIE_9b11d5\"",
+            "[[[",
+            "..",
+            "req.headers.authorization"
+          ]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}
