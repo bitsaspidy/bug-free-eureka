@@ -12,7 +12,7 @@ Status: `todo` · `in-progress` · `review` (PR open) · `done` (merged by owner
 | WO-005 | BFE-005 sensitive logging + redaction utility | core-engineer, security-reviewer | Known secrets never leak (redaction-check skill) | todo | — |
 | WO-006 | CLI: init, audit, JSON output, exit codes | integrations-engineer | Works in a clean external example | todo | — |
 | WO-007 | Express adapter: limiter, audit logger, Redis option | integrations-engineer, security-reviewer | HTTP + multi-instance tests, documented failure modes | todo | — |
-| WO-008 | Cross-platform CI, CodeQL, dependency review, Dependabot | devops-release | Matrix green; checks required on `main` | todo | — |
+| WO-008 | Cross-platform CI, CodeQL, dependency review, Dependabot | devops-release | Matrix green; checks required on `main` | review | [#13](https://github.com/bitsaspidy/bug-free-eureka/pull/13) |
 | WO-009 | Docs (VitePress, quickstart, config ref, limitations, deployment) | docs-community | Independent dev can run examples | todo | — |
 | WO-010 | Publishing (Changesets, package validation, OIDC, provenance) | devops-release | Prerelease installs cleanly | todo | — |
 | WO-011 | Sponsors & governance | docs-community | Policies & funding understandable | todo | — |
