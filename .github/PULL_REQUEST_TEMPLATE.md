@@ -27,6 +27,11 @@ Run locally before you mark the PR ready. CI runs the full matrix.
 - [ ] `pass`, `fail` and `not_assessed` fixtures added
 - [ ] `docs/rules/BFE-XXX.md` added or updated
 
+## Docs
+
+- [ ] `README.md` updated to reflect this work order (or not needed: explain below)
+- [ ] `docs/WORK_ORDERS.md` row set to `review` with this PR's link
+
 ## Release
 
 - [ ] Changeset added (or not needed: explain below)
