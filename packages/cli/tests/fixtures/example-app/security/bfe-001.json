@@ -1,0 +1,9 @@
+{
+  "app": { "kind": "html", "expressAppFound": true },
+  "transport": { "https": "app" },
+  "proxy": { "present": "no", "headerConfig": "not_supplied" },
+  "coverage": { "complete": true, "limitsHit": [], "unresolvedMiddleware": false },
+  "settings": { "poweredBy": "enabled" },
+  "helmet": { "dependency": "absent", "mounts": [] },
+  "headers": []
+}

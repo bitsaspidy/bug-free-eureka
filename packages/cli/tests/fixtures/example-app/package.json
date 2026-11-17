@@ -1,0 +1,9 @@
+{
+  "name": "bfe-example-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Clean external example project for the CLI smoke test. It holds evidence files only; no code is ever executed.",
+  "scripts": {
+    "postinstall": "node -e \"throw new Error('scanned code must never run')\""
+  }
+}

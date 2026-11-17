@@ -13,7 +13,7 @@
   },
   "packageManager": "npm@11.15.0",
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build -w @bug-free-eureka/core && npm run build -w @bug-free-eureka/express && npm run build -w @bug-free-eureka/cli",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "typecheck": "npm run typecheck --workspaces --if-present && tsc --noEmit -p tsconfig.json",

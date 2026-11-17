@@ -1,0 +1,15 @@
+{
+  "app": { "expressAppFound": true },
+  "deployment": {
+    "topology": "none",
+    "proxyAddresses": [],
+    "directExposure": "unknown",
+    "forwardedHeaderHandling": "unknown"
+  },
+  "trustProxy": {
+    "state": "set",
+    "value": { "kind": "boolean", "value": true },
+    "location": "src/app.ts:7"
+  },
+  "coverage": { "complete": true, "limitsHit": [] }
+}

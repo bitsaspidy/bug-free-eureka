@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "rules": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "BFE-001": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "description": "Run this rule. Default: true.",
+              "type": "boolean"
+            },
+            "evidence": {
+              "description": "Path, relative to the project root, of a JSON file with this rule's input.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000,
+              "pattern": "\\.json$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "BFE-003": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "description": "Run this rule. Default: true.",
+              "type": "boolean"
+            },
+            "evidence": {
+              "description": "Path, relative to the project root, of a JSON file with this rule's input.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000,
+              "pattern": "\\.json$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "BFE-005": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "description": "Run this rule. Default: true.",
+              "type": "boolean"
+            },
+            "evidence": {
+              "description": "Path, relative to the project root, of a JSON file with this rule's input.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000,
+              "pattern": "\\.json$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "BFE-006": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "description": "Run this rule. Default: true.",
+              "type": "boolean"
+            },
+            "evidence": {
+              "description": "Path, relative to the project root, of a JSON file with this rule's input.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000,
+              "pattern": "\\.json$"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["version"],
+  "additionalProperties": false
+}
