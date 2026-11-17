@@ -1,0 +1,15 @@
+{
+  "name": "not_assessed-parse-error",
+  "description": "coverage incomplete, no declarations",
+  "overrides": {
+    "coverage": {
+      "complete": false,
+      "limitsHit": ["parse-error:src/app.ts"]
+    },
+    "declarations": []
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

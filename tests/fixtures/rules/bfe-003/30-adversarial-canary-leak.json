@@ -1,0 +1,34 @@
+{
+  "name": "adversarial-canary-leak",
+  "description": "canaries in locations and limitsHit",
+  "overrides": {
+    "coverage": {
+      "complete": true,
+      "limitsHit": ["CANARY456"]
+    },
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "CANARY123 secret:1",
+        "limit": {
+          "state": "unbounded"
+        }
+      },
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "route",
+        "location": "a b:1",
+        "limit": {
+          "state": "default"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

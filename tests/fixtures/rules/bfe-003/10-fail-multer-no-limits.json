@@ -1,0 +1,34 @@
+{
+  "name": "fail-multer-no-limits",
+  "description": "multer without limits",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "multer",
+        "source": "multer",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "multer": {
+          "storage": "memory",
+          "limitsObject": "absent",
+          "files": {
+            "state": "default"
+          },
+          "fields": {
+            "state": "default"
+          },
+          "fieldSize": {
+            "state": "default"
+          },
+          "parts": {
+            "state": "default"
+          }
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

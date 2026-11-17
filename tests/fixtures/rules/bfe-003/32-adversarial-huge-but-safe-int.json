@@ -1,0 +1,22 @@
+{
+  "name": "adversarial-huge-but-safe-int",
+  "description": "json MAX_SAFE_INTEGER",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 9007199254740991
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "warning-multer-counts",
+  "description": "multer disk, counts default",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "multer",
+        "source": "multer",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 5242880
+        },
+        "multer": {
+          "storage": "disk",
+          "limitsObject": "literal",
+          "files": {
+            "state": "default"
+          },
+          "fields": {
+            "state": "default"
+          },
+          "fieldSize": {
+            "state": "default"
+          },
+          "parts": {
+            "state": "default"
+          }
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

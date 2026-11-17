@@ -1,0 +1,39 @@
+{
+  "name": "warning-nginx-cap-reachable",
+  "description": "nginx cap 1 MiB, reachability unknown",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "bodyLimitConfig": "supplied",
+      "appReachableDirectly": "unknown",
+      "nginx": {
+        "clientMaxBodySize": [
+          {
+            "scope": "server",
+            "value": {
+              "state": "literal",
+              "bytes": 1048576
+            },
+            "locationCount": 0
+          }
+        ],
+        "configComplete": true
+      }
+    },
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "unbounded"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "low"
+  }
+}

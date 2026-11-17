@@ -1,0 +1,38 @@
+{
+  "name": "fail-proxy-declared-unlimited",
+  "description": "nginx server unlimited, json unbounded",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "bodyLimitConfig": "supplied",
+      "appReachableDirectly": "unknown",
+      "nginx": {
+        "clientMaxBodySize": [
+          {
+            "scope": "server",
+            "value": {
+              "state": "unlimited"
+            },
+            "locationCount": 0
+          }
+        ],
+        "configComplete": true
+      }
+    },
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "unbounded"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "adversarial-direct-exposure-with-list",
+  "description": "T10",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "directExposure": "yes",
+      "proxyAddresses": ["10.0.1.5"]
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "list",
+        "entries": ["10.0.1.5"]
+      }
+    }
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

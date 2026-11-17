@@ -1,0 +1,39 @@
+{
+  "name": "warning-proxy-unknown",
+  "description": "proxy unknown, multer no limits",
+  "overrides": {
+    "proxy": {
+      "present": "unknown",
+      "bodyLimitConfig": "not_supplied",
+      "appReachableDirectly": "unknown"
+    },
+    "declarations": [
+      {
+        "kind": "multer",
+        "source": "multer",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "multer": {
+          "storage": "memory",
+          "limitsObject": "absent",
+          "files": {
+            "state": "default"
+          },
+          "fields": {
+            "state": "default"
+          },
+          "fieldSize": {
+            "state": "default"
+          },
+          "parts": {
+            "state": "default"
+          }
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "low"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "warning-urlencoded-params",
+  "description": "parameterLimit 100000",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "urlencoded",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        },
+        "parameterLimit": {
+          "state": "literal",
+          "bytes": 100000
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "warning-proxy-declared-not-supplied",
+  "description": "proxy yes, config not supplied",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "bodyLimitConfig": "not_supplied",
+      "appReachableDirectly": "unknown"
+    },
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "unbounded"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "low"
+  }
+}

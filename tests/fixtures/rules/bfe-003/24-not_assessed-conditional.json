@@ -1,0 +1,21 @@
+{
+  "name": "not_assessed-conditional",
+  "description": "json conditional unbounded",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "conditional",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "unbounded"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

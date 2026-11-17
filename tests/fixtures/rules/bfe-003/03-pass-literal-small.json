@@ -1,0 +1,22 @@
+{
+  "name": "pass-literal-small",
+  "description": "json global 512 KiB",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 524288
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

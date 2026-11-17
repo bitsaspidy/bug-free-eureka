@@ -1,0 +1,13 @@
+{
+  "name": "not_assessed-no-express",
+  "description": "no express app",
+  "overrides": {
+    "app": {
+      "expressAppFound": false
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

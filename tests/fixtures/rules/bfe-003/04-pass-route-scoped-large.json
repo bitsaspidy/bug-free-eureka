@@ -1,0 +1,31 @@
+{
+  "name": "pass-route-scoped-large",
+  "description": "json global default, route 5 MiB",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        }
+      },
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "literal",
+          "bytes": 5242880
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

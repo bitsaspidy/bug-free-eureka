@@ -1,0 +1,21 @@
+{
+  "name": "warning-hops-under-count",
+  "description": "T9",
+  "overrides": {
+    "deployment": {
+      "topology": "cdn-plus-lb",
+      "directExposure": "no"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 1
+      }
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

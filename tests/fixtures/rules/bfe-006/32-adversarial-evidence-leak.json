@@ -1,0 +1,26 @@
+{
+  "name": "adversarial-evidence-leak",
+  "description": "canaries never echoed",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "proxyAddresses": ["10.99.88.77", "<script>CANARY1</script>", "\u001b[31mCANARY4"]
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "list",
+        "entries": ["10.99.88.77", "<script>CANARY1</script>", "\u001b[31mCANARY4"]
+      },
+      "location": "../../etc/passwd\nCANARY2"
+    },
+    "coverage": {
+      "complete": true,
+      "limitsHit": ["CANARY3"]
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

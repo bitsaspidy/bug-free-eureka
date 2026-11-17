@@ -1,0 +1,20 @@
+{
+  "name": "fail-always-true-function",
+  "description": "E2",
+  "overrides": {
+    "deployment": {
+      "topology": "none"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "function",
+        "alwaysTrue": true
+      }
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "not_assessed-pass-plus-unresolved",
+  "description": "pass plus unresolved declaration",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        }
+      },
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "unresolved",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

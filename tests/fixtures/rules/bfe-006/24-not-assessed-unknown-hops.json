@@ -1,0 +1,20 @@
+{
+  "name": "not-assessed-unknown-hops",
+  "description": "T16",
+  "overrides": {
+    "deployment": {
+      "topology": "unknown"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 1
+      }
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

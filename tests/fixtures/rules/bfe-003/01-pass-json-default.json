@@ -1,0 +1,30 @@
+{
+  "name": "pass-json-default",
+  "description": "json + urlencoded global default",
+  "overrides": {
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        }
+      },
+      {
+        "kind": "urlencoded",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "default"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

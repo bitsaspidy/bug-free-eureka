@@ -1,0 +1,21 @@
+{
+  "name": "pass-cdn-lb-two-hops",
+  "description": "T7",
+  "overrides": {
+    "deployment": {
+      "topology": "cdn-plus-lb",
+      "directExposure": "no"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 2
+      }
+    }
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

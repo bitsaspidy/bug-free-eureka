@@ -1,0 +1,43 @@
+{
+  "name": "not_assessed-nginx-incomplete",
+  "description": "nginx config incomplete",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "bodyLimitConfig": "supplied",
+      "appReachableDirectly": "unknown",
+      "nginx": {
+        "clientMaxBodySize": [],
+        "configComplete": false
+      }
+    },
+    "declarations": [
+      {
+        "kind": "multer",
+        "source": "multer",
+        "scope": "route",
+        "location": "src/app.ts:10",
+        "multer": {
+          "storage": "memory",
+          "limitsObject": "absent",
+          "files": {
+            "state": "default"
+          },
+          "fields": {
+            "state": "default"
+          },
+          "fieldSize": {
+            "state": "default"
+          },
+          "parts": {
+            "state": "default"
+          }
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

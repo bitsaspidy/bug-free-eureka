@@ -1,0 +1,17 @@
+{
+  "name": "not-assessed-parse-incomplete",
+  "description": "G3",
+  "overrides": {
+    "deployment": {
+      "topology": "none"
+    },
+    "coverage": {
+      "complete": false,
+      "limitsHit": ["parse-error:src/app.ts"]
+    }
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

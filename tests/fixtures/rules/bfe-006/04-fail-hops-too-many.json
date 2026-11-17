@@ -1,0 +1,21 @@
+{
+  "name": "fail-hops-too-many",
+  "description": "T6",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy",
+      "declaredHops": 1
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 2
+      }
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

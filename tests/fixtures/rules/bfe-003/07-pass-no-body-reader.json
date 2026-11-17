@@ -1,0 +1,11 @@
+{
+  "name": "pass-no-body-reader",
+  "description": "no declarations, coverage complete",
+  "overrides": {
+    "declarations": []
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "low"
+  }
+}

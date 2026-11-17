@@ -1,0 +1,46 @@
+{
+  "name": "fail-proxy-nginx-partial",
+  "description": "server 1 MiB, one location unlimited",
+  "overrides": {
+    "proxy": {
+      "present": "yes",
+      "bodyLimitConfig": "supplied",
+      "appReachableDirectly": "no",
+      "nginx": {
+        "clientMaxBodySize": [
+          {
+            "scope": "server",
+            "value": {
+              "state": "literal",
+              "bytes": 1048576
+            },
+            "locationCount": 0
+          },
+          {
+            "scope": "location",
+            "value": {
+              "state": "unlimited"
+            },
+            "locationCount": 1
+          }
+        ],
+        "configComplete": true
+      }
+    },
+    "declarations": [
+      {
+        "kind": "json",
+        "source": "express",
+        "scope": "global",
+        "location": "src/app.ts:10",
+        "limit": {
+          "state": "unbounded"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "medium"
+  }
+}

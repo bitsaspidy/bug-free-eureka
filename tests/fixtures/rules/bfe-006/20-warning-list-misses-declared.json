@@ -1,0 +1,21 @@
+{
+  "name": "warning-list-misses-declared",
+  "description": "T13 wins",
+  "overrides": {
+    "deployment": {
+      "topology": "cdn-plus-lb",
+      "proxyAddresses": ["173.245.48.0/20", "10.0.1.5"]
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "list",
+        "entries": ["uniquelocal"]
+      }
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "warning-unset-behind-proxy",
+  "description": "T3",
+  "overrides": {
+    "deployment": {
+      "topology": "single-proxy"
+    }
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

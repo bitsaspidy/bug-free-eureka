@@ -1,0 +1,20 @@
+{
+  "name": "fail-hops-no-proxy",
+  "description": "E2",
+  "overrides": {
+    "deployment": {
+      "topology": "none"
+    },
+    "trustProxy": {
+      "state": "set",
+      "value": {
+        "kind": "hops",
+        "hops": 1
+      }
+    }
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}
