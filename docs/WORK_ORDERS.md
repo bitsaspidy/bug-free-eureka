@@ -9,7 +9,7 @@ Status: `todo` · `in-progress` · `review` (PR open) · `done` (merged by owner
 | WO-002 | Security rule engine (types, registry, evidence, not_assessed, report builder) | core-engineer, qa-engineer | Deterministic; pass/fail/not_assessed tests | done | [PR #7](https://github.com/bitsaspidy/bug-free-eureka/pull/7) |
 | WO-003 | BFE-001 security headers | rule-analyst → core-engineer | No assumption about unknown proxy behavior | done | [PR #9](https://github.com/bitsaspidy/bug-free-eureka/pull/9) |
 | WO-004 | BFE-003 request limits + BFE-006 trusted proxy | rule-analyst → core-engineer | Valid/invalid/unknown cases tested | done | [PR #10](https://github.com/bitsaspidy/bug-free-eureka/pull/10) |
-| WO-005 | BFE-005 sensitive logging + redaction utility | core-engineer, security-reviewer | Known secrets never leak (redaction-check skill) | review | [PR #18](https://github.com/bitsaspidy/bug-free-eureka/pull/18) |
+| WO-005 | BFE-005 sensitive logging + redaction utility | core-engineer, security-reviewer | Known secrets never leak (redaction-check skill) | done | [PR #18](https://github.com/bitsaspidy/bug-free-eureka/pull/18) |
 | WO-006 | CLI: init, audit, JSON output, exit codes | integrations-engineer | Works in a clean external example | todo | — |
 | WO-007 | Express adapter: limiter, audit logger, Redis option | integrations-engineer, security-reviewer | HTTP + multi-instance tests, documented failure modes | todo | — |
 | WO-008 | Cross-platform CI, CodeQL, dependency review, Dependabot | devops-release | Matrix green; checks required on `main` | review | [PR #13](https://github.com/bitsaspidy/bug-free-eureka/pull/13) |

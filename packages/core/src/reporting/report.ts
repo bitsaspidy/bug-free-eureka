@@ -1,7 +1,7 @@
 import type { SecurityFinding, SecurityReport } from "../types/index.js";
 import { InputInvalidError } from "../engine/errors.js";
 import { issuePaths, reportOptionsSchema } from "../engine/schemas.js";
-import { maskSecrets } from "../engine/mask.js";
+import { maskLocation, maskSecrets } from "../engine/mask.js";
 import { compare } from "../engine/sort.js";
 
 export interface BuildReportOptions {
@@ -34,7 +34,7 @@ function maskFinding(f: SecurityFinding): SecurityFinding {
         source: maskSecrets(e.source),
         detail: maskSecrets(e.detail),
       };
-      if (e.location !== undefined) out.location = maskSecrets(e.location);
+      if (e.location !== undefined) out.location = maskLocation(e.location);
       return out;
     }),
     remediation: maskSecrets(f.remediation),

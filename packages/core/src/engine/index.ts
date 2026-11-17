@@ -6,7 +6,7 @@ export {
   InvalidRuleIdError,
   type BfeErrorCode,
 } from "./errors.js";
-export { mask, maskSecrets, MASK } from "./mask.js";
+export { mask, maskLocation, maskSecrets, MASK } from "./mask.js";
 export {
   isSensitiveKey,
   normalizeKey,

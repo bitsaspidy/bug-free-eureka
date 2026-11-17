@@ -1,3 +1,5 @@
+import { safeLocation } from "../rules/shared/safe-location.js";
+
 export const MASK = "****";
 
 /** Masking helper: never reveals any part (or the length) of the value. */
@@ -41,6 +43,19 @@ const PATTERNS: readonly (readonly [RegExp, string])[] = [
   [/\b(?:sk|pk|rk|ghp|gho|ghs|xox[a-z])[-_][A-Za-z0-9_-]{16,200}/g, MASK],
   [/\bAKIA[0-9A-Z]{16}\b/g, MASK],
 ];
+
+/**
+ * Masks an evidence location. A plain relative `file.ext:line` (the shared
+ * allowlist) keeps its line number and only its path is masked; anything else
+ * is masked as free text.
+ */
+export function maskLocation(location: string): string {
+  if (safeLocation(location) === undefined) return maskSecrets(location);
+  // The path still goes through the token patterns (ghp_, AKIA, JWT, sk_...);
+  // only the trailing line number is kept out of key=value masking.
+  const colon = location.lastIndexOf(":");
+  return `${maskSecrets(location.slice(0, colon))}${location.slice(colon)}`;
+}
 
 /**
  * Defense in depth: masks secret-looking substrings in free text. Rules must
