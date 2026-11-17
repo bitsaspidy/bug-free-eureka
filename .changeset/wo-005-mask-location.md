@@ -2,4 +2,4 @@
 "@bug-free-eureka/core": patch
 ---
 
-Keep safe `file:line` evidence locations unmasked in findings and reports, and only mask short key names (`auth`, `otp`, `code`, `sig`, `session`, `pwd`) when they appear as whole words, so text such as `design`, `signal` or `author` is no longer masked.
+Keep the line number of safe `file:line` evidence locations in findings and reports (only the path is masked), instead of masking locations such as `src/auth.ts:12` to `:****`.

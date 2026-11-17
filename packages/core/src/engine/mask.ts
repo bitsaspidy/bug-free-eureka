@@ -9,11 +9,8 @@ export function mask(value?: unknown): string {
 }
 
 const MAX_SCAN_LENGTH = 10_000;
-// Long, unambiguous key names match anywhere (DB_PASSWORD, xAuthToken).
-// Short ones only match as a whole word (auth_token, x-otp, sig=), so `design`, `signal`,
-// `encoded` or `author` in ordinary text are not masked.
 const KEY =
-  "(?:pass(?:word|wd|phrase)?|secret|token|api[_-]?key|authorization|credential|private[_-]?key|(?<![a-z0-9])(?:pwd|auth|session(?:id)?|otp(?:code)?|codes?|sig(?:nature)?)(?![a-z0-9]))";
+  "(?:pass(?:word|wd|phrase)?|pwd|secret|token|api[_-]?key|authorization|auth|session(?:id)?|otp|credential|private[_-]?key|code|sig(?:nature)?)";
 
 // Every pattern is linear-time: bounded quantifiers, no nested/overlapping repeats,
 // and input is capped to MAX_SCAN_LENGTH before matching. No unbounded leading
@@ -49,10 +46,15 @@ const PATTERNS: readonly (readonly [RegExp, string])[] = [
 
 /**
  * Masks an evidence location. A plain relative `file.ext:line` (the shared
- * allowlist) is kept as is, so line numbers survive; anything else is masked.
+ * allowlist) keeps its line number and only its path is masked; anything else
+ * is masked as free text.
  */
 export function maskLocation(location: string): string {
-  return safeLocation(location) ?? maskSecrets(location);
+  if (safeLocation(location) === undefined) return maskSecrets(location);
+  // The path still goes through the token patterns (ghp_, AKIA, JWT, sk_...);
+  // only the trailing line number is kept out of key=value masking.
+  const colon = location.lastIndexOf(":");
+  return `${maskSecrets(location.slice(0, colon))}${location.slice(colon)}`;
 }
 
 /**

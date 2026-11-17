@@ -47,12 +47,7 @@ describe("evidence locations keep their line numbers (WO-005 review)", () => {
   });
 });
 
-describe("maskSecrets short keys need a word start", () => {
-  it.each(["design: wide", "signal=1", "encoded=abc", "author: bob", "assign=x", "barcode=123"])(
-    "leaves %s alone",
-    (text) => expect(maskSecrets(text)).toBe(text),
-  );
-
+describe("maskSecrets keeps masking short and camelCase keys", () => {
   it.each([
     "code=BFE_CANARY_OTP_448120",
     "/cb?sig=BFE_CANARY_TOKEN_7f3a91",
@@ -62,5 +57,25 @@ describe("maskSecrets short keys need a word start", () => {
     "DB_PASSWORD=BFE_CANARY_PASS_c02e44",
     "xAuthToken=BFE_CANARY_TOKEN_7f3a91",
     "session=BFE_CANARY_COOKIE_9b11d5",
+    "xAuth=BFE_CANARY_TOKEN_7f3a91",
+    "resetCode=BFE_CANARY_OTP_448120",
+    "smscode=BFE_CANARY_OTP_448120",
+    "recoveryCodes: BFE_CANARY_OTP_448120",
+    "userPwd=BFE_CANARY_PASS_c02e44",
+    "userSession=BFE_CANARY_COOKIE_9b11d5",
+    "userSig=BFE_CANARY_TOKEN_7f3a91",
+    '{\\"mfaCode\\":\\"BFE_CANARY_OTP_448120\\"}',
   ])("masks %s", (text) => expect(maskSecrets(text)).not.toMatch(LEAK));
+});
+
+describe("maskLocation masks secret-shaped paths but keeps the line", () => {
+  it.each([
+    ["src/ghp_abcdefghijklmnopqrstuvwxyz.ts:4", ":4"],
+    ["src/AKIAABCDEFGHIJKLMNOP.ts:9", ":9"],
+    ["src/sk_live_abcdefghijklmnopqrst.js:2", ":2"],
+  ])("%s", (location, line) => {
+    const out = maskLocation(location);
+    expect(out.endsWith(line)).toBe(true);
+    expect(out).toContain("****");
+  });
 });
