@@ -8,7 +8,7 @@ export function mask(value?: unknown): string {
 
 const MAX_SCAN_LENGTH = 10_000;
 const KEY =
-  "(?:pass(?:word|wd|phrase)?|pwd|secret|token|api[_-]?key|authorization|auth|session(?:id)?|otp|credential|private[_-]?key)";
+  "(?:pass(?:word|wd|phrase)?|pwd|secret|token|api[_-]?key|authorization|auth|session(?:id)?|otp|credential|private[_-]?key|code|sig(?:nature)?)";
 
 // Every pattern is linear-time: bounded quantifiers, no nested/overlapping repeats,
 // and input is capped to MAX_SCAN_LENGTH before matching. No unbounded leading

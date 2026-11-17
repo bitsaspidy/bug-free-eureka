@@ -1,0 +1,11 @@
+{
+  "name": "pass-no-loggers",
+  "description": "no logging configured, scan complete",
+  "overrides": {
+    "loggers": []
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "medium"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "fail-set-cookie",
+  "description": "response headers written without set-cookie redaction",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "no",
+          "responseHeaders": "yes",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "paths",
+          "paths": ["req.headers.set-cookie"]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

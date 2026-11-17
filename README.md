@@ -27,7 +27,7 @@ Read the announcement: [Introducing Bug-Free Eureka](https://satsaiinfo.com/blog
 
 | Package | What it does | Status |
 |---|---|---|
-| [`@bug-free-eureka/core`](packages/core) | Rule engine, rules, finding model and report builder. Framework-free. | In progress |
+| [`@bug-free-eureka/core`](packages/core) | Rule engine, rules, finding model, report builder and a deep redaction utility (`redact`). Framework-free. | In progress |
 | [`@bug-free-eureka/cli`](packages/cli) | `init` and `audit` commands, JSON and SARIF output, `--fail-on` for CI. | Planned |
 | [`@bug-free-eureka/express`](packages/express) | Opt-in middleware: rate limiter (in-memory or Redis-compatible), redacting audit logger, hardening. | Planned |
 
@@ -37,8 +37,8 @@ Read the announcement: [Introducing Bug-Free Eureka](https://satsaiinfo.com/blog
 |---|---|---|---|
 | [BFE-001](docs/rules/BFE-001.md) | Missing recommended security headers | medium | Implemented |
 | [BFE-003](docs/rules/BFE-003.md) | Missing request-size limit | medium | Implemented |
+| [BFE-005](docs/rules/BFE-005.md) | Sensitive data in configured logging | high | Implemented |
 | [BFE-006](docs/rules/BFE-006.md) | Unsafe trusted-proxy configuration | high | Implemented |
-| BFE-005 | Sensitive data in configured logging | high | Planned (v0.1) |
 | BFE-002 | Unsafe CORS on sensitive endpoints | high | Planned (v0.3) |
 | BFE-004 | Missing declared login rate-limit policy | high | Planned (v0.3) |
 | BFE-007 | Stack traces in production error handling | medium | Planned (v0.3) |

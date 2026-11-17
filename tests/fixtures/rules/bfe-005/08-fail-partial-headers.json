@@ -1,0 +1,28 @@
+{
+  "name": "fail-partial-headers",
+  "description": "only authorization redacted, cookie still written",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "paths",
+          "paths": ["req.headers.authorization"]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "fail",
+    "confidence": "high"
+  }
+}

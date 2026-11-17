@@ -1,0 +1,28 @@
+{
+  "name": "pass-whole-headers-and-body",
+  "description": "whole headers, set-cookie and body removed",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "yes",
+          "requestBody": "yes",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "paths",
+          "paths": ["req.headers", "res.headers[\"set-cookie\"]", "req.body"]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "pass",
+    "confidence": "high"
+  }
+}

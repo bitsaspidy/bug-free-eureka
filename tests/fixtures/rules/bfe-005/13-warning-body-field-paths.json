@@ -1,0 +1,44 @@
+{
+  "name": "warning-body-field-paths",
+  "description": "body redacted per field only",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "no",
+          "responseHeaders": "no",
+          "requestBody": "yes",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "paths",
+          "paths": [
+            "req.body.password",
+            "req.body.passwd",
+            "req.body.pwd",
+            "req.body.otp",
+            "req.body.totp",
+            "req.body.code",
+            "req.body.mfaCode",
+            "req.body.mfa_code",
+            "req.body.refreshToken",
+            "req.body.refresh_token",
+            "req.body.accessToken",
+            "req.body.access_token",
+            "req.body.token",
+            "req.body.idToken",
+            "req.body.id_token"
+          ]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "warning",
+    "confidence": "medium"
+  }
+}

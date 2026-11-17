@@ -1,0 +1,15 @@
+{
+  "name": "not_assessed-no-loggers-incomplete",
+  "description": "nothing found, scan incomplete",
+  "overrides": {
+    "coverage": {
+      "complete": false,
+      "limitsHit": []
+    },
+    "loggers": []
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

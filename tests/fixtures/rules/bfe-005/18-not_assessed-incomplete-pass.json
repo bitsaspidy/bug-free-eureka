@@ -1,0 +1,37 @@
+{
+  "name": "not_assessed-incomplete-pass",
+  "description": "clean logger but scan limits hit",
+  "overrides": {
+    "coverage": {
+      "complete": false,
+      "limitsHit": ["src/big.ts"]
+    },
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "paths",
+          "paths": [
+            "req.headers.authorization",
+            "req.headers[\"proxy-authorization\"]",
+            "req.headers.cookie",
+            "req.headers[\"x-api-key\"]"
+          ]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

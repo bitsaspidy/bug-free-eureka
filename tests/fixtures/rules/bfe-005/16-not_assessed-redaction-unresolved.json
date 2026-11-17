@@ -1,0 +1,27 @@
+{
+  "name": "not_assessed-redaction-unresolved",
+  "description": "redact options from a variable",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "yes",
+          "responseHeaders": "no",
+          "requestBody": "no",
+          "query": "no"
+        },
+        "redaction": {
+          "state": "unresolved"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}

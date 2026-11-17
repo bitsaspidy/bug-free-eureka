@@ -1,0 +1,27 @@
+{
+  "name": "not_assessed-emits-unknown",
+  "description": "custom serializer, unknown output",
+  "overrides": {
+    "loggers": [
+      {
+        "library": "pino-http",
+        "kind": "request",
+        "scope": "global",
+        "location": "src/app.ts:12",
+        "emits": {
+          "requestHeaders": "unknown",
+          "responseHeaders": "unknown",
+          "requestBody": "unknown",
+          "query": "unknown"
+        },
+        "redaction": {
+          "state": "none"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "status": "not_assessed",
+    "confidence": "low"
+  }
+}
