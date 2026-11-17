@@ -110,7 +110,7 @@ Updated with every work order. Full details are on the [work-order board](docs/W
 | WO-004 | BFE-003 request limits, BFE-006 trusted proxy | ✅ Done ([#10](https://github.com/bitsaspidy/bug-free-eureka/pull/10)) |
 | WO-005 | BFE-005 sensitive logging and redaction | ✅ Done ([#18](https://github.com/bitsaspidy/bug-free-eureka/pull/18), [#20](https://github.com/bitsaspidy/bug-free-eureka/pull/20)) |
 | WO-006 | CLI: `init`, `audit`, JSON and SARIF output, exit codes | ✅ Done ([#22](https://github.com/bitsaspidy/bug-free-eureka/pull/22)) |
-| WO-007 | Express adapter: rate limiter, redacting audit logger, Redis option | 🔄 In progress |
+| WO-007 | Express adapter: rate limiter, redacting audit logger, Redis option | ✅ Done ([#25](https://github.com/bitsaspidy/bug-free-eureka/pull/25)) |
 | WO-008 | Cross-platform CI, CodeQL, dependency review, Dependabot | ✅ Done ([#13](https://github.com/bitsaspidy/bug-free-eureka/pull/13)) |
 | WO-009 | Documentation site (quickstart, config reference, deployment) | ⏳ To do |
 | WO-010 | npm publishing (Changesets, provenance) | ⏳ To do |
