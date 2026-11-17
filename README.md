@@ -2,6 +2,8 @@
   <img src="docs/assets/banner.png" width="100%" alt="Bug-Free Eureka: open-source API security toolkit for Node.js and Express. Find risks. Fix configurations. Build with confidence.">
 </p>
 
+[![CI](https://github.com/bitsaspidy/bug-free-eureka/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/bitsaspidy/bug-free-eureka/actions/workflows/ci.yml)
+
 # Bug-Free Eureka
 
 **Find risks. Fix configurations. Build with confidence.**
@@ -9,6 +11,8 @@
 Bug-Free Eureka is an open-source API security toolkit for Node.js and Express. It detects common security misconfigurations, audits API configuration and helps keep sensitive data out of your logs, and it runs inside your existing app.
 
 > **Status: early development.** Nothing is published to npm yet, and the APIs below may change. See [Roadmap](#roadmap) and the [work-order board](docs/WORK_ORDERS.md).
+
+Read the announcement: [Introducing Bug-Free Eureka](https://satsaiinfo.com/blog/introducing-bug-free-eureka-an-open-source-api-security-toolkit-for-nodejs-and-express)
 
 ## Why Bug-Free Eureka
 
@@ -44,7 +48,7 @@ Every finding is `pass`, `fail` or `not_assessed`, with evidence and a suggested
 
 ## Compatibility
 
-Targets Node.js **22, 24 and 26** on Linux, Windows and macOS (`engines: ">=22 <27"`), with ESM and CommonJS builds. These are targets: support is only claimed once cross-platform CI proves it.
+Tested in CI on Node.js **22, 24 and 26** on Linux, Windows and macOS (`engines: ">=22 <27"`), with ESM and CommonJS builds. Every pull request runs lint, typecheck, tests with coverage and build across that full matrix.
 
 ## Develop locally
 
