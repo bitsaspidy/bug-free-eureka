@@ -1,3 +1,4 @@
+import express5 from "express";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import {
@@ -271,6 +272,13 @@ describe("rate limiter options and helpers", () => {
     expect(ipKey("::1")).toBe("0:0:0:0::/64");
     expect(ipKey("fe80::1%eth0")).toBe("fe80:0:0:0::/64");
     expect(ipKey(undefined)).toBe("unknown");
+    // SEC-RL: IPv4 clients behind mapped or NAT64 addresses keep separate buckets.
+    expect(ipKey("::ffff:c000:207")).toBe("192.0.2.7");
+    expect(ipKey("::ffff:c000:208")).toBe("192.0.2.8");
+    expect(ipKey("::FFFF:192.0.2.9")).toBe("192.0.2.9");
+    expect(ipKey("64:ff9b::c000:207")).toBe("192.0.2.7");
+    expect(ipKey("64:ff9b::192.0.2.10")).toBe("192.0.2.10");
+    expect(ipKey("2001:db8::192.0.2.1")).toBe("2001:db8:0:0::/64");
     expect(ipKey("not-an-ip")).toBe("not-an-ip");
   });
 
@@ -279,6 +287,15 @@ describe("rate limiter options and helpers", () => {
     for (let i = 0; i < 100_000; i++) await store.hit(`k${i}`, 60_000, 0);
     expect(store.size()).toBeLessThanOrEqual(1000);
     expect(await store.hit("k99999", 60_000, 0)).toEqual({ current: 2, previous: 0 });
+  });
+
+  it("SEC-DOS-1: a full memory store of active keys still admits new keys in amortized O(1)", async () => {
+    const store = createMemoryStore({ maxKeys: 100_000 });
+    for (let i = 0; i < 100_000; i++) await store.hit(`active${i}`, 60_000, 0);
+    const start = performance.now();
+    for (let i = 0; i < 20_000; i++) await store.hit(`new${i}`, 60_000, 0);
+    expect(performance.now() - start).toBeLessThan(2000); // a full scan per key took minutes
+    expect(store.size()).toBeLessThanOrEqual(100_000);
   });
 
   it("memory store reset forgets a key", async () => {
@@ -308,7 +325,7 @@ describe("rate limiter options and helpers", () => {
   });
 
   it("a throwing logger never breaks the request path", async () => {
-    const express = EXPRESS_VERSIONS[0][1];
+    const express = express5;
     const a = express();
     a.use(
       createRateLimiter({

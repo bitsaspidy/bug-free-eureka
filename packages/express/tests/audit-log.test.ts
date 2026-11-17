@@ -1,5 +1,6 @@
+import express5 from "express";
 import request from "supertest";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   AuditLoggerOptionsError,
   createAuditLogger,
@@ -21,8 +22,8 @@ describe.each(EXPRESS_VERSIONS)("audit logger on %s", (_label, express) => {
     a.post("/users/:id/login", (_req, res) => {
       res.status(201).json({ ok: true });
     });
-    a.get("/slow", (_req, res) => {
-      setTimeout(() => res.send("late"), 200);
+    a.get("/hang", () => {
+      // never responds: the client aborts
     });
     return { a, events, logger };
   }
@@ -80,10 +81,9 @@ describe.each(EXPRESS_VERSIONS)("audit logger on %s", (_label, express) => {
   });
 
   it("marks aborted requests", async () => {
-    const { a, events, logger } = setup();
-    await expect(request(a).get("/slow").timeout(30)).rejects.toThrow();
-    await new Promise((r) => setTimeout(r, 50));
-    await logger.flush();
+    const { a, events } = setup();
+    await expect(request(a).get("/hang").timeout(30)).rejects.toThrow();
+    await vi.waitFor(() => expect(events).toHaveLength(1));
     expect(events[0]).toMatchObject({ aborted: true });
   });
 
@@ -137,7 +137,7 @@ describe.each(EXPRESS_VERSIONS)("audit logger on %s", (_label, express) => {
 });
 
 describe("audit logger sink isolation", () => {
-  const express = EXPRESS_VERSIONS[0][1];
+  const express = express5;
 
   it("a throwing or rejecting sink never affects the response and is counted", async () => {
     let n = 0;
@@ -160,8 +160,12 @@ describe("audit logger sink isolation", () => {
   });
 
   it("drops and counts events when the queue is full", async () => {
+    let release: () => void = () => {};
+    const gate = new Promise<void>((r) => {
+      release = r;
+    });
     const logger = createAuditLogger({
-      sink: () => new Promise((r) => setTimeout(r, 5)),
+      sink: () => gate, // held until all requests are done
       maxQueue: 2,
     });
     const a = express();
@@ -170,6 +174,7 @@ describe("audit logger sink isolation", () => {
       res.send("ok");
     });
     await Promise.all(Array.from({ length: 10 }, () => request(a).get("/x").expect(200)));
+    release();
     await logger.flush();
     expect(logger.stats().dropped).toBeGreaterThan(0);
     expect(logger.stats().queued).toBe(0);

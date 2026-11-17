@@ -37,11 +37,11 @@ Invalid options throw `RateLimitOptionsError` when the middleware is created.
 
 **Over the limit:** `429` with `Retry-After` (seconds) and no internal details.
 
-**Client identity:** the default key is `req.ip`. IPv6 addresses are grouped to their /64 network and IPv4-mapped IPv6 addresses become IPv4. The limiter never reads `X-Forwarded-For` itself, so a forged header only matters if your `trust proxy` setting trusts it. With `trust proxy: true`, every client can choose its own `req.ip` and bypass the limiter, and the `logger` receives a `trust_proxy_true` warning. Keys are SHA-256 hashed before they reach any store, so stores never hold raw IPs or usernames.
+**Client identity:** the default key is `req.ip`. IPv6 addresses are grouped to their /64 network; IPv4-mapped (`::ffff:…`) and NAT64 (`64:ff9b::/96`) addresses are keyed by their embedded IPv4 address. The limiter never reads `X-Forwarded-For` itself, so a forged header only matters if your `trust proxy` setting trusts it. With `trust proxy: true`, every client can choose its own `req.ip` and bypass the limiter, and the `logger` receives a `trust_proxy_true` warning. Keys are SHA-256 hashed before they reach any store, so stores never hold raw IPs or usernames.
 
 ### Stores
 
-**In-memory** (`createMemoryStore({ maxKeys })`, default 100 000 keys) works for a single process only. When it is full, it evicts expired keys first, then the least recently updated ones. An attacker who sends from many addresses can push other clients' counters out early. Use a shared store for more than one instance.
+**In-memory** (`createMemoryStore({ maxKeys })`, default 100 000 keys) works for a single process only. When it is full, it evicts the least recently updated 10% of keys. An attacker who sends from many addresses (or usernames, with a custom `keyGenerator`) can therefore push other counters out early and reset them. **Use a shared store such as Redis for login, OTP and other brute-force targets**, and for more than one instance.
 
 **Redis-compatible** (`createRedisStore({ eval, prefix })`) is shared by every instance that uses the same server and prefix (`bfe:rl:` by default). The package bundles no Redis client: you pass a function that runs `EVAL`:
 

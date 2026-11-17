@@ -95,21 +95,39 @@ export class StoreTimeoutError extends Error {
  */
 export function ipKey(ip: string | undefined): string {
   if (!ip) return "unknown";
-  const mapped = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i.exec(ip);
-  if (mapped?.[1]) return mapped[1];
   if (isIP(ip) !== 6) return ip;
-  const zoneless = ip.split("%")[0] as string;
-  const [head = "", tail = ""] = zoneless.split("::");
+  const g = ipv6Groups(ip);
+  if (!g) return ip;
+  // IPv4-mapped (::ffff:a.b.c.d in any notation) and NAT64 (64:ff9b::/96) carry
+  // one IPv4 client each: key them by that IPv4 address.
+  const zero5 = g.slice(0, 5).every((x) => x === 0);
+  const nat64 = g[0] === 0x64 && g[1] === 0xff9b && g.slice(2, 6).every((x) => x === 0);
+  if ((zero5 && g[5] === 0xffff) || nat64) {
+    const [hi = 0, lo = 0] = g.slice(6);
+    return `${hi >> 8}.${hi & 255}.${lo >> 8}.${lo & 255}`;
+  }
+  return `${g
+    .slice(0, 4)
+    .map((x) => x.toString(16))
+    .join(":")}::/64`;
+}
+
+/** Expands a valid IPv6 address (already checked with isIP) to 8 numbers. */
+function ipv6Groups(ip: string): number[] | null {
+  let s = (ip.split("%")[0] as string).toLowerCase();
+  const v4 = /(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(s);
+  if (v4) {
+    const [a, b, c, d] = v4.slice(1).map(Number) as [number, number, number, number];
+    s = `${s.slice(0, v4.index)}${((a << 8) | b).toString(16)}:${((c << 8) | d).toString(16)}`;
+  }
+  const [head = "", tail = ""] = s.split("::");
   const h = head ? head.split(":") : [];
   const t = tail ? tail.split(":") : [];
-  // A trailing embedded IPv4 counts as two groups, but only groups 0..3 matter.
-  const missing = zoneless.includes("::") ? 8 - h.length - t.length : 0;
-  const groups = [...h, ...Array<string>(Math.max(0, missing)).fill("0"), ...t];
-  const net = groups
-    .slice(0, 4)
-    .map((g) => (Number.parseInt(g, 16) || 0).toString(16))
-    .join(":");
-  return `${net}::/64`;
+  const missing = s.includes("::") ? 8 - h.length - t.length : 0;
+  const groups = [...h, ...Array<string>(Math.max(0, missing)).fill("0"), ...t].map((x) =>
+    Number.parseInt(x, 16),
+  );
+  return groups.length === 8 && groups.every((x) => Number.isInteger(x)) ? groups : null;
 }
 
 function hashKey(name: string, key: string): string {

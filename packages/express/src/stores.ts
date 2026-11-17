@@ -41,20 +41,21 @@ export interface MemoryStore extends RateLimitStore {
 /**
  * Single-process store. Counts are not shared between processes or hosts:
  * for more than one instance use a shared store such as `createRedisStore`.
- * Bounded: when `maxKeys` is reached, expired keys are evicted first, then the
- * least recently updated ones. No timers are started.
+ * Bounded: when `maxKeys` is reached, the least recently updated 10% of keys
+ * are evicted. A flood of new keys can therefore reset older counters: use a
+ * shared store for login and other brute-force targets. No timers are started.
  */
 export function createMemoryStore(options: MemoryStoreOptions = {}): MemoryStore {
   const maxKeys = Math.max(1, Math.floor(options.maxKeys ?? 100_000));
   const map = new Map<string, Entry>();
 
-  function evict(window: number): void {
-    for (const [k, e] of map) {
-      if (e.window < window - 1) map.delete(k);
-    }
-    // Still full: drop the least recently updated keys (Map keeps insertion order).
+  // Map iteration order is least recently updated first (hit() re-inserts).
+  // Evicting a 10% batch from the front keeps the cost amortized O(1) per new
+  // key, with no full scan, even when every tracked key is still active.
+  const batch = Math.max(1, Math.ceil(maxKeys / 10));
+  function evict(): void {
     const it = map.keys();
-    while (map.size >= maxKeys) {
+    for (let i = 0; i < batch; i++) {
       const next = it.next();
       if (next.done) break;
       map.delete(next.value);
@@ -75,7 +76,7 @@ export function createMemoryStore(options: MemoryStoreOptions = {}): MemoryStore
           };
         }
       } else {
-        if (map.size >= maxKeys) evict(window);
+        if (map.size >= maxKeys) evict();
         e = { window, current: 0, previous: 0 };
       }
       e.current += 1;
