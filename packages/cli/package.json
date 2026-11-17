@@ -29,8 +29,12 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "bug-free-eureka": "./dist/bin.js"
+  },
   "files": [
     "dist",
+    "schema",
     "README.md",
     "LICENSE"
   ],
@@ -42,5 +46,9 @@
     "build": "tsup",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "prepack": "npm run build && node ../../scripts/copy-license.mjs"
+  },
+  "dependencies": {
+    "@bug-free-eureka/core": "0.0.0",
+    "zod": "4.6.7"
   }
 }

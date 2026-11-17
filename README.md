@@ -28,8 +28,17 @@ Read the announcement: [Introducing Bug-Free Eureka](https://satsaiinfo.com/blog
 | Package | What it does | Status |
 |---|---|---|
 | [`@bug-free-eureka/core`](packages/core) | Rule engine, rules, finding model, report builder and a deep redaction utility (`redact`). Framework-free. | In progress |
-| [`@bug-free-eureka/cli`](packages/cli) | `init` and `audit` commands, JSON and SARIF output, `--fail-on` for CI. | Planned |
+| [`@bug-free-eureka/cli`](packages/cli) | `init` and `audit` commands, text, JSON and SARIF output, `--fail-on` for CI. | Implemented (not yet on npm) |
 | [`@bug-free-eureka/express`](packages/express) | Opt-in middleware: rate limiter (in-memory or Redis-compatible), redacting audit logger, hardening. | Planned |
+
+### CLI quick start (not yet on npm)
+
+Build from this repository, then run it in your project. It reads JSON config and evidence files only and never runs your code. A rule without evidence is reported as not assessed, which is not a pass. See [packages/cli](packages/cli) for the evidence files and exit codes.
+
+```bash
+node <path-to-repo>/packages/cli/dist/bin.js init
+node <path-to-repo>/packages/cli/dist/bin.js audit --format sarif --output results.sarif --fail-on high
+```
 
 ## Rules
 
