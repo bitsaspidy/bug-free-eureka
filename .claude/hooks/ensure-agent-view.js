@@ -13,12 +13,29 @@
  */
 const fs = require('node:fs');
 const path = require('node:path');
+
+/**
+ * The main checkout of this repository, even when this script runs from a linked git worktree
+ * (`.git` is then a file pointing into <main>/.git/worktrees/<name>). Pure fs, no git process.
+ * Every session (main folder, worktrees, or the parent folder's hooks) thus shares one activity log.
+ */
+function mainRoot(dir) {
+  try {
+    const dotGit = path.join(dir, '.git');
+    if (!fs.statSync(dotGit).isFile()) return dir;
+    const m = /^gitdir:\s*(.+)$/m.exec(fs.readFileSync(dotGit, 'utf8'));
+    if (!m) return dir;
+    const gitDir = path.resolve(dir, m[1].trim());
+    const common = path.resolve(gitDir, fs.readFileSync(path.join(gitDir, 'commondir'), 'utf8').trim());
+    return path.basename(common) === '.git' && fs.existsSync(path.join(path.dirname(common), '.claude')) ? path.dirname(common) : dir;
+  } catch (_) { return dir; }
+}
 const http = require('node:http');
 const { spawn } = require('node:child_process');
 
 const PROJECT = 'bug-free-eureka';
 const PORT = Number(process.env.AGENT_VIEW_PORT || 4778);
-const ROOT = process.env.CLAUDE_PROJECT_DIR || path.resolve(__dirname, '..', '..');
+const ROOT = mainRoot(path.resolve(__dirname, '..', '..')); // always serve the main checkout's view
 const SERVER = path.join(ROOT, '.claude', 'agent-view', 'server.js');
 
 process.stdin.resume();

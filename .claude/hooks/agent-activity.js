@@ -14,6 +14,23 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+/**
+ * The main checkout of this repository, even when this script runs from a linked git worktree
+ * (`.git` is then a file pointing into <main>/.git/worktrees/<name>). Pure fs, no git process.
+ * Every session (main folder, worktrees, or the parent folder's hooks) thus shares one activity log.
+ */
+function mainRoot(dir) {
+  try {
+    const dotGit = path.join(dir, '.git');
+    if (!fs.statSync(dotGit).isFile()) return dir;
+    const m = /^gitdir:\s*(.+)$/m.exec(fs.readFileSync(dotGit, 'utf8'));
+    if (!m) return dir;
+    const gitDir = path.resolve(dir, m[1].trim());
+    const common = path.resolve(gitDir, fs.readFileSync(path.join(gitDir, 'commondir'), 'utf8').trim());
+    return path.basename(common) === '.git' && fs.existsSync(path.join(path.dirname(common), '.claude')) ? path.dirname(common) : dir;
+  } catch (_) { return dir; }
+}
+
 const LEAD = 'eureka-lead';
 const MAX_INPUT = 1024 * 1024; // ignore absurdly large payloads
 const MAX_LOG_BYTES = 512 * 1024; // rotate the log once it grows past this
@@ -43,7 +60,8 @@ function finish() {
     const isStart = /Start/.test(event);
     const verb = isStart ? 'started' : /Stop/.test(event) ? 'finished' : event;
 
-    const root = process.env.CLAUDE_PROJECT_DIR || process.cwd();
+    // The repo this script lives in (not CLAUDE_PROJECT_DIR, which may be a parent folder or a worktree).
+    const root = mainRoot(path.resolve(__dirname, '..', '..'));
     const logFile = path.join(root, '.claude', 'agent-activity.log');
     try {
       try {
