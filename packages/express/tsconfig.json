@@ -1,4 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // Typecheck runs before build in CI, so resolve core from source here.
+    "paths": { "@bug-free-eureka/core": ["../core/src/index.ts"] }
+  },
   "include": ["src", "tests", "tsup.config.ts"]
 }

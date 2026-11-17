@@ -29,7 +29,19 @@ Read the announcement: [Introducing Bug-Free Eureka](https://satsaiinfo.com/blog
 |---|---|---|
 | [`@bug-free-eureka/core`](packages/core) | Rule engine, rules, finding model, report builder and a deep redaction utility (`redact`). Framework-free. | In progress |
 | [`@bug-free-eureka/cli`](packages/cli) | `init` and `audit` commands, text, JSON and SARIF output, `--fail-on` for CI. | Implemented (not yet on npm) |
-| [`@bug-free-eureka/express`](packages/express) | Opt-in middleware: rate limiter (in-memory or Redis-compatible), redacting audit logger, hardening. | Planned |
+| [`@bug-free-eureka/express`](packages/express) | Opt-in Express 4/5 middleware: sliding-window rate limiter (in-memory or Redis-compatible store) and a redacting audit logger. Hardening middleware is not built yet. | Implemented (not yet on npm) |
+
+### Express quick start (not yet on npm)
+
+Both middlewares are opt-in and change nothing else in your app. The limiter keys on `req.ip`, so set `trust proxy` to your real proxy hop count. See [packages/express](packages/express) for the Redis store and the store-outage behaviour.
+
+```js
+import { createAuditLogger, createRateLimiter } from "@bug-free-eureka/express";
+
+app.set("trust proxy", 1); // exactly one reverse proxy in front of the app
+app.use(createAuditLogger({ sink: (event) => console.log(JSON.stringify(event)) }));
+app.use("/login", createRateLimiter({ limit: 5, windowMs: 60_000, onStoreError: "fail-closed" }));
+```
 
 ### CLI quick start (not yet on npm)
 
