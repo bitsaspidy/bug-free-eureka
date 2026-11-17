@@ -44,6 +44,9 @@ const KEY_PARTS: readonly string[] = [
   "sessionid",
   "signature",
   "bearer",
+  "securityanswer",
+  "cardnumber",
+  "iban",
 ];
 const KEY_WORDS: readonly string[] = [
   "auth",
@@ -65,7 +68,7 @@ const KEY_WORDS: readonly string[] = [
 const ANY_PARTS: readonly string[] = ["pass", "auth", "mfa"];
 // 5. Short parts that are only checked at the start or end (pincode, userpin, otpauth),
 //    because inside words they are common (shipping, footprint).
-const EDGE_PARTS: readonly string[] = ["otp", "pin", "sess", "sid"];
+const EDGE_PARTS: readonly string[] = ["otp", "pin", "sess", "sid", "2fa", "tfa"];
 // 6. Keys ending in "code" or "key" are secrets (resetCode, client_key) unless known safe.
 const SAFE_CODE_KEYS: readonly string[] = [
   "statuscode",
@@ -140,7 +143,7 @@ export function isSensitiveKey(key: string, extraKeys: readonly string[] = []): 
   if (keyWords(key).some((w) => KEY_WORDS.includes(w))) return true;
   if (ANY_PARTS.some((part) => k.includes(part))) return true;
   if (EDGE_PARTS.some((part) => k.startsWith(part) || k.endsWith(part))) return true;
-  if (k.endsWith("code") && !SAFE_CODE_KEYS.includes(k)) return true;
+  if ((k.endsWith("code") || k.endsWith("codes")) && !SAFE_CODE_KEYS.includes(k)) return true;
   if (k.endsWith("key") && !SAFE_KEY_KEYS.includes(k)) return true;
   return extraKeys.some((extra) => normalizeKey(extra) === k);
 }

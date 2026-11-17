@@ -190,6 +190,13 @@ describe("security review regressions (WO-005)", () => {
     "sess",
     "x-authkey",
     "x-dbpass",
+    "recoveryCodes",
+    "backup_codes",
+    "2fa",
+    "tfa_secret",
+    "securityAnswer",
+    "cardNumber",
+    "iban",
   ])("masks values under %s", (k) => {
     expect(isSensitiveKey(k)).toBe(true);
     expect(out({ [k]: C.otp })).not.toMatch(LEAK);
@@ -236,6 +243,7 @@ describe("security review regressions (WO-005)", () => {
 
   it("masks code= in free text and bounds Error props and headers", () => {
     expect(out(`GET /cb?code=${C.otp}&state=1`)).not.toMatch(LEAK);
+    expect(out(`GET /file?sig=${C.token}&exp=1`)).not.toMatch(LEAK);
     const err = new Error("x") as Error & Record<string, unknown>;
     for (let i = 0; i < 300_000; i++) err[`p${i}`] = i;
     const many: Record<string, string> = {};
