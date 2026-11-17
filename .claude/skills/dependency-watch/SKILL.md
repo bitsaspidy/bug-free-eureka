@@ -17,7 +17,7 @@ For each direct dependency in the root and `packages/*/package.json`, it reports
 | Group | Constraint |
 |---|---|
 | `vitest`, `@vitest/coverage-v8`, `@vitest/*` | identical versions |
-| `typescript` ↔ `typescript-eslint` ↔ tsup's dts build ↔ `@arethetypeswrong/cli` | the TS version must be inside typescript-eslint's supported range, and tsup dts must build; TS 7 (native) needs explicit confirmation |
+| `typescript` ↔ `typescript-eslint` ↔ tsup's dts build ↔ `@arethetypeswrong/cli` | the TS version must be inside typescript-eslint's supported range, and tsup dts must build; TS 7 (native) needs explicit confirmation. Today: TS pinned `~6.0.0` (typescript-eslint 8.72.2 needs `<6.1`) and `.github/dependabot.yml` ignores `typescript >=6.1.0`; lift both together |
 | `eslint` ↔ `typescript-eslint` ↔ eslint plugins | peer ranges satisfied |
 | `express` ↔ `@types/express` ↔ `supertest`/`@types/supertest` | types major matches the runtime major we test |
 | `@types/node` | major = **lowest** supported Node (22), so we don't use APIs missing on 22 |

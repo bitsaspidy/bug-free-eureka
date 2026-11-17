@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # typescript-eslint 8.72.2 has a peer range of typescript <6.1, so TS 6.1+/7
+      # fails `npm ci` (ERESOLVE). Remove once typescript-eslint supports newer TS.
+      - dependency-name: typescript
+        versions: [">=6.1.0"]
     groups:
       npm-minor-patch:
         update-types: [minor, patch]
