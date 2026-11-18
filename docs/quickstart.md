@@ -85,7 +85,7 @@ node <repo>/packages/cli/dist/bin.js init
 node <repo>/packages/cli/dist/bin.js audit
 ```
 
-`init` writes `bug-free-eureka.config.json` with all four rules enabled. The first audit reports four rules as not assessed. Then write an evidence file for each rule you want checked. Each rule page describes its input in section 2.1:
+`init` writes `bug-free-eureka.config.json` with all four rules enabled. It then suggests `npx bug-free-eureka audit`; until the CLI is on npm, run the `node <repo>/...` command above instead. The first audit reports four rules as not assessed. Then write an evidence file for each rule you want checked. Each rule page describes its input in section 2.1:
 
 - [BFE-001 Security headers](/rules/BFE-001)
 - [BFE-003 Request-size limit](/rules/BFE-003)

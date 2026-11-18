@@ -90,7 +90,7 @@ Then pass it to every limiter, for example `createApp({ store: createSharedStore
 
 ## Docker
 
-- Inside a container, the app must listen on `0.0.0.0` (`HOST=0.0.0.0` for the example server). Publish the port only to the proxy: `-p 127.0.0.1:3000:3000`, or put the proxy and app on one Docker network and publish only the proxy.
+- Inside a container, the app must listen on `0.0.0.0` (`HOST=0.0.0.0` for the example server, which trusts one proxy hop: if clients can reach the port directly, they can forge `X-Forwarded-For`). Publish the port only to the proxy: `-p 127.0.0.1:3000:3000`, or put the proxy and app on one Docker network and publish only the proxy.
 - A published port is not a proxy and adds no `X-Forwarded-For`. Count only real proxies (Nginx, Traefik, a load balancer) as hops.
 - Depending on the Docker network setup, `req.ip` may be a Docker gateway address instead of the client's. Check what a route like `/whoami` reports before you rely on per-client limits.
 - Run as a non-root user (`USER node` in the official Node.js images). Bug-Free Eureka needs no extra port, root or volume.

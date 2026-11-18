@@ -49,7 +49,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: bitsaspidy/bug-free-eureka
-          ref: main # pin a commit SHA for reproducible results
+          ref: <commit-sha> # a full commit SHA you have reviewed; never a moving branch
           path: .bfe
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
