@@ -7,11 +7,15 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import type { Express } from "express";
 import request from "supertest";
 import { afterAll, describe, expect, it } from "vitest";
-import {
-  REDIS_HIT_SCRIPT,
-  REDIS_RESET_SCRIPT,
-  type RateLimitStore as Store,
-} from "../../packages/express/src/index.js";
+
+// The built package is loaded at runtime (like dist-import.test.ts): typecheck runs before the build.
+const expressPkg = "@bug-free-eureka/express";
+const { REDIS_HIT_SCRIPT, REDIS_RESET_SCRIPT } = (await import(/* @vite-ignore */ expressPkg)) as {
+  REDIS_HIT_SCRIPT: string;
+  REDIS_RESET_SCRIPT: string;
+};
+/** Opaque to this test: a store created by the example and handed back to it. */
+type Store = object;
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const bin = join(root, "packages/cli/dist/bin.js");
