@@ -13,7 +13,7 @@ Status: `todo` · `in-progress` · `review` (PR open) · `done` (merged by owner
 | WO-006 | CLI: init, audit, JSON output, exit codes | integrations-engineer | Works in a clean external example | done | [PR #22](https://github.com/bitsaspidy/bug-free-eureka/pull/22) |
 | WO-007 | Express adapter: limiter, audit logger, Redis option | integrations-engineer, security-reviewer | HTTP + multi-instance tests, documented failure modes | done | [PR #25](https://github.com/bitsaspidy/bug-free-eureka/pull/25) |
 | WO-008 | Cross-platform CI, CodeQL, dependency review, Dependabot | devops-release | Matrix green; checks required on `main` | done | [PR #13](https://github.com/bitsaspidy/bug-free-eureka/pull/13) |
-| WO-009 | Docs (VitePress, quickstart, config ref, limitations, deployment) | docs-community | Independent dev can run examples | todo | — |
+| WO-009 | Docs (VitePress, quickstart, config ref, limitations, deployment) | docs-community | Independent dev can run examples | review | [PR #27](https://github.com/bitsaspidy/bug-free-eureka/pull/27) |
 | WO-010 | Publishing (Changesets, package validation, OIDC, provenance) | devops-release | Prerelease installs cleanly | todo | — |
 | WO-011 | Sponsors & governance | docs-community | Policies & funding understandable | todo | — |
 | WO-012 | External beta | eureka-lead | Blockers resolved | todo | — |
