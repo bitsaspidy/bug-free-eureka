@@ -9,3 +9,4 @@ scripts/dev
 README.md
 CLAUDE.md
 *.md
+**/.vitepress/cache

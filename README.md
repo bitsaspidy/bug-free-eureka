@@ -12,6 +12,8 @@ Bug-Free Eureka is an open-source API security toolkit for Node.js and Express. 
 
 > **Status: early development.** Nothing is published to npm yet, and the APIs below may change. See [Roadmap](#roadmap) and the [work-order board](docs/WORK_ORDERS.md).
 
+**Documentation:** [bitsaspidy.github.io/bug-free-eureka](https://bitsaspidy.github.io/bug-free-eureka/): quickstart, CLI and Express reference, rules, configuration, limitations and deployment guide. The site goes live after the first deploy from `main`; until then, read the same pages in [docs/](docs/).
+
 Read the announcement: [Introducing Bug-Free Eureka](https://satsaiinfo.com/blog/introducing-bug-free-eureka-an-open-source-api-security-toolkit-for-nodejs-and-express)
 
 ## Why Bug-Free Eureka
@@ -85,7 +87,7 @@ npm test
 
 TypeScript is pinned to `~6.0.0` because typescript-eslint 8.72.2 supports only `typescript <6.1`; Dependabot ignores newer TypeScript until that changes.
 
-Other scripts: `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run test:coverage`.
+Other scripts: `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run test:coverage`, and `npm run docs:dev` / `npm run docs:build` for the documentation site.
 
 ## Roadmap
 
@@ -112,7 +114,7 @@ Updated with every work order. Full details are on the [work-order board](docs/W
 | WO-006 | CLI: `init`, `audit`, JSON and SARIF output, exit codes | ✅ Done ([#22](https://github.com/bitsaspidy/bug-free-eureka/pull/22)) |
 | WO-007 | Express adapter: rate limiter, redacting audit logger, Redis option | ✅ Done ([#25](https://github.com/bitsaspidy/bug-free-eureka/pull/25)) |
 | WO-008 | Cross-platform CI, CodeQL, dependency review, Dependabot | ✅ Done ([#13](https://github.com/bitsaspidy/bug-free-eureka/pull/13)) |
-| WO-009 | Documentation site (quickstart, config reference, deployment) | ⏳ To do |
+| WO-009 | Documentation site (quickstart, config reference, deployment) | 🔍 In review ([#27](https://github.com/bitsaspidy/bug-free-eureka/pull/27)) |
 | WO-010 | npm publishing (Changesets, provenance) | ⏳ To do |
 | WO-011 | Sponsors and governance | ⏳ To do |
 | WO-012 | External beta | ⏳ To do |

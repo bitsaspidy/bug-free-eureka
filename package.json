@@ -6,7 +6,8 @@
   "license": "Apache-2.0",
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "engines": {
     "node": ">=22 <27"
@@ -19,7 +20,9 @@
     "typecheck": "npm run typecheck --workspaces --if-present && tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "format:check": "prettier --check .",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "docs:dev": "npm run dev -w @bug-free-eureka/docs",
+    "docs:build": "npm run build -w @bug-free-eureka/docs"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",

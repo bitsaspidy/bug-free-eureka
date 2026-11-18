@@ -1,0 +1,16 @@
+{
+  "app": { "expressAppFound": true },
+  "deployment": {
+    "topology": "single-proxy",
+    "declaredHops": 1,
+    "proxyAddresses": [],
+    "directExposure": "no",
+    "forwardedHeaderHandling": "append"
+  },
+  "trustProxy": {
+    "state": "set",
+    "value": { "kind": "hops", "hops": 1 },
+    "location": "src/app.js:4"
+  },
+  "coverage": { "complete": true, "limitsHit": [] }
+}
