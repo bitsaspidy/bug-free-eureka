@@ -11,7 +11,7 @@ import {
   REDIS_HIT_SCRIPT,
   REDIS_RESET_SCRIPT,
   type RateLimitStore as Store,
-} from "@bug-free-eureka/express";
+} from "../../packages/express/src/index.js";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const bin = join(root, "packages/cli/dist/bin.js");
