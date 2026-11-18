@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/bitsaspidy/bug-free-eureka/main/packages/cli/schema/config.schema.json",
+  "version": 1,
+  "rules": {
+    "BFE-001": { "enabled": true },
+    "BFE-003": { "enabled": true },
+    "BFE-005": { "enabled": true },
+    "BFE-006": { "evidence": "security/bfe-006-fixed.json" }
+  }
+}

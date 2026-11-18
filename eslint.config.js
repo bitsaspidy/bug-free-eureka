@@ -5,7 +5,14 @@ import prettier from "eslint-config-prettier";
 
 export default tseslint.config(
   {
-    ignores: ["**/dist/**", "**/coverage/**", "**/node_modules/**", "scripts/dev/**", ".claude/**"],
+    ignores: [
+      "**/dist/**",
+      "**/.vitepress/cache/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+      "scripts/dev/**",
+      ".claude/**",
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
